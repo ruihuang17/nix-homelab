@@ -77,6 +77,7 @@ in
   };
 
   environment.systemPackages = with pkgs; [
+    kitty.terminfo # so SSH from kitty (TERM=xterm-kitty) works
     starship
     git
     vim
