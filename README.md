@@ -8,7 +8,7 @@ the packages/services that tie them together.
 | `satsuma` | `satsuma/` | NixOS (unstable) | `10.0.10.72` | Main server: storage, nginx, Kanidm, Nextcloud, Matrix, media, monitoring, AI |
 | `bergamot` (hostname `mail`) | `bergamot/` | NixOS (unstable) | `100.91.236.114` (Tailscale) | OVH VPS: Stalwart mail server, offsite backups |
 | `pomelo` | `pomelo/` | NixOS (unstable) | `10.0.10.40` | Desktop |
-| `lime` | `lime/` | nix-darwin (aarch64) | `10.0.10.73` | Mac mini: iMessage bridge, digest service, Jellyfin |
+| `lime` | `lime/` | nix-darwin (aarch64) | `10.0.10.73` | Mac mini: iMessage bridge, Jellyfin |
 | `tangerine` | `tangerine/` | nix-darwin (aarch64) | `10.0.10.41` | MacBook Pro laptop |
 
 See [docs/Setup Overview.md](docs/Setup%20Overview.md) for hardware and the full
@@ -119,6 +119,5 @@ diff scripts/drvpaths.baseline /tmp/after
 | [Hermes](docs/Hermes.md) | Hermes agent |
 | [Tailscale](docs/Tailscale.md) | Tailnet dependencies and migration plan |
 | [lime (macOS)](docs/lime%20(macOS).md) | Mac mini specifics |
-| [iMessage Digest](docs/iMessage%20Digest.md) | Digest service on `lime` |
 | [SMS Matrix Bridge](docs/SMS%20Matrix%20Bridge.md) | Pixel SMS bridge |
 | [System Mail](docs/System%20Mail%20(Alerts).md) | Alert mail relay |

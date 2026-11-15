@@ -9,17 +9,10 @@ Mac mini, `10.0.10.73`, Apple M4 / 16 GB / macOS 27.2 (26B123). See
 | Thing | Managed by | Notes |
 | ----- | ---------- | ----- |
 | mautrix-imessage | launchd user agent `fi.mau.mautrix-imessage` | `platform: mac`; binary `~/mautrix-imessage/mautrix-imessage` |
-| iMessage digest | launchd user agent `ca.estrogenuinely.imessage-digest` | polls two portal rooms, `apfel` alerts + OpenRouter Claude Haiku digest; see [[iMessage Digest]] |
 | wsproxy tunnel | launchd user agent `ca.estrogenuinely.wsproxy-tunnel` | `ssh -L 127.0.0.1:29331` to satsuma; works around Local Network Privacy for the bridge |
 | Jellyfin | launchd user agent `com.jellyfin.server` (`open -a Jellyfin`) | Homebrew cask, `*:8096` |
-| node_exporter | launchd user agent `sh.brew.node_exporter` | `:9100`, scraped by satsuma as `instance="lime"`; also serves the digest heartbeat |
+| node_exporter | launchd user agent `sh.brew.node_exporter` | `:9100`, scraped by satsuma as `instance="lime"` |
 | autofs | `/etc/auto_master` + `/etc/auto_nas` | NFSv3 to satsuma, see [[NFS]] |
-
-The [[iMessage Digest]] service runs on the same five-minute launchd cadence as
-node_exporter. It reads the mautrix portal rooms through the Matrix API (no new
-TCC grant), uses Apple's on-device model via Homebrew `apfel` for event alerts
-and OpenRouter Claude Haiku 5.5 on a ZDR route for the final digest, and writes a
-textfile metric for the stale-run alert.
 
 The bridge reaches `mautrix-wsproxy` through the
 `ca.estrogenuinely.wsproxy-tunnel` agent: macOS Local Network Privacy blocks
@@ -123,10 +116,9 @@ lsof -p $(pgrep -f mautrix-imessage/mautrix-imessage) | grep chat.db
 curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:8096/health
 curl -s -o /dev/null -w "%{http_code}\n" http://127.0.0.1:9100/metrics
 grep "Received incoming message" ~/mautrix-imessage/logs/mautrix-imessage.log | tail -1
-launchctl list | grep -E 'imessage-digest|wsproxy-tunnel|fi.mau'
+launchctl list | grep -E 'wsproxy-tunnel|fi.mau'
 lsof -nP -iTCP:29331 -sTCP:LISTEN
 grep "Appservice transaction websocket opened" ~/mautrix-imessage/logs/mautrix-imessage.log | tail -1
-cat "$HOME/Library/Application Support/imessage-digest/textfile/imessage_digest.prom"
 ```
 
 Negative control: a launchd **user agent** that has no FDA should be denied

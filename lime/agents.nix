@@ -19,9 +19,6 @@ in
         Label = "sh.brew.node_exporter";
         ProgramArguments = [
           "${pkgs.prometheus-node-exporter}/bin/node_exporter"
-          # The iMessage digest writes imessage_digest.prom here; see
-          # lime/digest/default.nix.
-          "--collector.textfile.directory=${home}/Library/Application Support/imessage-digest/textfile"
         ];
         RunAtLoad = true;
         KeepAlive = true;
@@ -70,7 +67,7 @@ in
     # The unsigned mautrix binary cannot open a LAN socket under macOS Local
     # Network Privacy (EHOSTUNREACH to 10.0.10.72), while Apple-signed
     # /usr/bin/ssh can. Forward the wsproxy's loopback port over SSH so the
-    # bridge only connects to 127.0.0.1; see docs/iMessage Digest.md.
+    # bridge only connects to 127.0.0.1; see docs/lime (macOS).md.
     wsproxy-tunnel = {
       serviceConfig = {
         Label = "ca.estrogenuinely.wsproxy-tunnel";

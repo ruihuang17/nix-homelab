@@ -17,7 +17,6 @@ in
 {
   imports = [
     ./agents.nix
-    ./digest/default.nix
     ./homebrew.nix
     ../common-darwin.nix
   ];
