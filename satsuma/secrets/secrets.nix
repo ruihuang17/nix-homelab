@@ -40,4 +40,5 @@ in
   "email-mcp-pass.age".publicKeys = common;
   "email-mcp-hotmail-token.age".publicKeys = common;
   "email-mcp-uw-token.age".publicKeys = common;
+  "tofu_ovh_env.age".publicKeys = common;
 }

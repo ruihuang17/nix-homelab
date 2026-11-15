@@ -29,6 +29,10 @@ resource "ovh_cloud_storage_object_bucket" "this" {
 
   lifecycle {
     prevent_destroy = true
+    # Imported buckets read back an empty object_lock block, which the
+    # provider treats as a forced replacement. Object lock can only be set at
+    # creation anyway, so ignore it.
+    ignore_changes = [object_lock]
   }
 }
 
@@ -76,7 +80,8 @@ resource "ovh_cloud_project_user_s3_policy" "s3" {
 }
 
 # The backup bucket already exists and holds the restic repository.
+# The CA API is multi-region, so bucket IDs are <REGION>_<name>.
 import {
   to = ovh_cloud_storage_object_bucket.this["backup"]
-  id = "${var.project_id}/satsuma-backup"
+  id = "${var.project_id}/${var.storage_region}_satsuma-backup"
 }
