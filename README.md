@@ -71,7 +71,7 @@ you are holding a change back, stop `nixos-upgrade.timer` first.
 ├── dots/                  # dotfiles linked into the hosts (via homelab.nix)
 ├── docs/                  # per-topic runbooks (Obsidian vault)
 ├── scripts/               # deploy.sh, drvpaths.sh; not imported by the flake
-└── tofu/                  # OpenTofu for the VPS/DNS/Cloudflare resources
+└── tofu/                  # OpenTofu for OVHcloud, Cloudflare DNS and AWS SES
 ```
 
 Shared config is plain NixOS/Darwin modules imported explicitly by each host;

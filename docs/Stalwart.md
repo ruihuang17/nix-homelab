@@ -56,7 +56,7 @@ Thunderbird ──IMAP/SMTP──▶ Stalwart (vps)  ──LDAPS over Tailscale�
 
 ## Git / NixOS / deploying
 
-- Repo `git@github.com:ruihuang17/nixos-homelab.git`, checked out at `/etc/nixos` on both
+- Repo `git@github.com:ruihuang17/nix-homelab.git`, checked out at `/etc/nixos` on both
   hosts. Flake outputs: `nixosConfigurations.satsuma` and `nixosConfigurations.mail`
   (renamed from `"mail.estrogenuinely.ca"`). Rebuild: `nixos-rebuild switch --flake /etc/nixos#bergamot`.
 - Both hosts use **fish** as login shell. Wrap remote commands in `bash -lc '...'`, or better,

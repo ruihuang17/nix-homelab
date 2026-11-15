@@ -1,7 +1,8 @@
-# OVH infrastructure (OpenTofu)
+# Cloud infrastructure (OpenTofu)
 
-Manages the OVH side of the homelab. Nix configures what runs on the hosts;
-this directory creates the OVH resources they depend on.
+Manages the homelab's cloud resources: OVHcloud (object storage, mail VPS),
+Cloudflare DNS, and AWS SES. Nix configures what runs on the hosts; this
+directory creates the cloud resources they depend on.
 
 | File | Purpose |
 | --- | --- |
@@ -9,7 +10,7 @@ this directory creates the OVH resources they depend on.
 | `vps.tf` | Reads the existing mail VPS (data source only) |
 | `dns.tf` | Cloudflare DNS records for `estrogenuinely.ca` and `ruihuang.io` (all DNS-only) |
 | `ses.tf` | AWS SES identity `estrogenuinely.ca` (us-east-2), its MAIL FROM and configuration set, and the `mail.estrogenuinely.ca` SMTP user for bergamot |
-| `outputs.tf` | Sensitive `KEY=value` blocks in the format `restic_s3_env.age` uses |
+| `outputs.tf` | Sensitive credentials for agenix: S3 `KEY=value` blocks (`restic_s3_env.age` format) and the SES SMTP user/password |
 | `encryption.tf` | Client-side AES-GCM encryption of state and plans (PBKDF2 passphrase) |
 | `backend.tf.example` | S3 remote state on OVH with native locking |
 
@@ -18,6 +19,24 @@ so the VPS is read-only here. `satsuma-backup` already exists and is imported
 by the `import` block in `storage.tf`. It has `prevent_destroy` set.
 
 ## Credentials
+
+All credentials live in one agenix secret. Load them into the shell:
+
+```bash
+cd /etc/nixos/satsuma/secrets
+agenix -e tofu_env.age -i /etc/ssh/ssh_host_ed25519_key
+set -a; source <(agenix -d tofu_env.age -i ~/.ssh/id_ed25519); set +a
+```
+
+| Variable | Used by |
+| --- | --- |
+| `OVH_ENDPOINT=ovh-ca`, `OVH_APPLICATION_KEY`, `OVH_APPLICATION_SECRET`, `OVH_CONSUMER_KEY` | OVH provider |
+| `TF_VAR_state_passphrase` | state encryption |
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | S3 state backend (OVH "state" user, not AWS) |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare provider |
+| `TF_VAR_aws_access_key_id`, `TF_VAR_aws_secret_access_key` | AWS provider (SES) |
+
+### OVHcloud
 
 Create a token at https://auth.ca.ovhcloud.com/api/createToken with these
 rights. Rule paths do not include the API version: `/publicCloud/...` covers
@@ -29,24 +48,6 @@ as `/v2/...` grants nothing.
 | GET, POST, PUT, DELETE | `/cloud/project/<project_id>/*` |
 | GET, POST, PUT, DELETE | `/publicCloud/project/<project_id>/*` |
 | GET | `/vps/<vps>` and `/vps/<vps>/*` |
-
-Keep the keys in an agenix secret and load them into the shell:
-
-```bash
-cd /etc/nixos/satsuma/secrets
-agenix -e tofu_env.age -i /etc/ssh/ssh_host_ed25519_key
-set -a; source <(agenix -d tofu_env.age -i ~/.ssh/id_ed25519); set +a
-```
-
-`tofu_env.age` holds every credential tofu needs:
-
-| Variable | Used by |
-| --- | --- |
-| `OVH_ENDPOINT=ovh-ca`, `OVH_APPLICATION_KEY`, `OVH_APPLICATION_SECRET`, `OVH_CONSUMER_KEY` | OVH provider |
-| `TF_VAR_state_passphrase` | state encryption |
-| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | S3 state backend (OVH "state" user, not AWS) |
-| `CLOUDFLARE_API_TOKEN` | Cloudflare provider |
-| `TF_VAR_aws_access_key_id`, `TF_VAR_aws_secret_access_key` | AWS provider (SES) |
 
 A copy of the OVH keys lives in Vaultwarden as "Tofu OVHcloud API Key".
 
@@ -72,6 +73,21 @@ The home WAN records (`estrogenuinely.ca` A/AAAA, `ruihuang.io` A) are in
 (`satsuma/core/ddns.nix`) updates their address, and tofu ignores changes to
 `content`, so an IP change does not show up as drift. Tofu still manages the
 name, TTL and proxy setting.
+
+### AWS
+
+The AWS provider uses the IAM user `tofu` (access key from IAM → Users →
+Security credentials, use case "Application running outside AWS"). It gets
+the key through `TF_VAR_aws_*` variables because `AWS_ACCESS_KEY_ID` is
+already taken by the OVH state backend. Its inline policy allows `ses:*` and
+`iam:*` on `user/mail.estrogenuinely.ca` only.
+
+`ses.tf` imports the existing SES identity and creates the
+`mail.estrogenuinely.ca` SMTP user. The SMTP password is derived from the
+access key secret, so rotation is
+`tofu apply -replace=aws_iam_access_key.mail` followed by the agenix and
+bergamot steps in `docs/Stalwart.md`. Account settings (production access,
+sending quota) stay in the console.
 
 ## State encryption
 
