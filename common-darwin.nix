@@ -59,6 +59,10 @@ in
     gid = 20;
     home = "/Users/rhuang";
     shell = pkgs.fish;
+    # Written to /etc/ssh/nix_authorized_keys.d/rhuang, which sshd reads in
+    # addition to ~/.ssh/authorized_keys (AuthorizedKeysCommand). Requires
+    # Remote Login to be on. Same key as the NixOS hosts.
+    openssh.authorizedKeys.keys = homelab.users.rhuang.keys;
   };
 
   # NFS media access is granted by GID 3000, not by UID: satsuma exports
