@@ -8,6 +8,7 @@ let
 in
 {
   "cloudflare_api.age".publicKeys = common;
+  "cloudflare_ddns_env.age".publicKeys = common;
   "mail_pass.age".publicKeys = common;
   "nextcloud_admin_pass.age".publicKeys = common;
   "paperless_admin_pass.age".publicKeys = common;

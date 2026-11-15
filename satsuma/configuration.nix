@@ -8,6 +8,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./core/networking.nix
+    ./core/ddns.nix
     ./core/nginx.nix
     ./core/kanidm.nix
     ./core/mail.nix

@@ -7,6 +7,7 @@ this directory creates the OVH resources they depend on.
 | --- | --- |
 | `storage.tf` | Buckets `satsuma-backup` and `satsuma-tofu-state`, each with its own S3 user, credential and bucket-scoped policy |
 | `vps.tf` | Reads the existing mail VPS (data source only) |
+| `dns.tf` | Cloudflare DNS records for `estrogenuinely.ca` and `ruihuang.io` (all DNS-only) |
 | `outputs.tf` | Sensitive `KEY=value` blocks in the format `restic_s3_env.age` uses |
 | `encryption.tf` | Client-side AES-GCM encryption of state and plans (PBKDF2 passphrase) |
 | `backend.tf.example` | S3 remote state on OVH with native locking |
@@ -45,6 +46,30 @@ The control panel's API keys page lists applications, not consumer keys, and
 deleting an application revokes every key under it. Keep one consumer key per
 application. To rotate: create a new token, replace the `OVH_*` values here
 and in Vaultwarden, run `tofu plan`, then delete the old application.
+
+### Cloudflare
+
+The Cloudflare provider reads `CLOUDFLARE_API_TOKEN`. The token needs
+Zone → DNS → Edit and Zone → Zone → Read on both zones. The ACME token in
+`cloudflare_api.age` has those rights but uses the name
+`CLOUDFLARE_DNS_API_TOKEN`, so either add a dedicated token to
+`tofu_ovh_env.age` or export it under the other name:
+
+```bash
+set -a; source <(agenix -d cloudflare_api.age -i ~/.ssh/id_ed25519); set +a
+export CLOUDFLARE_API_TOKEN="$CLOUDFLARE_DNS_API_TOKEN"
+```
+
+Records in `dns.tf` are keyed `<zone>/<name>/<type>[/<n>]`, with `@` for the
+apex. Changes made in the Cloudflare dashboard show up as drift in
+`tofu plan`, and records added there are not managed until they are added to
+`dns.tf`.
+
+The home WAN records (`estrogenuinely.ca` A/AAAA, `ruihuang.io` A) are in
+`local.dynamic_records`. satsuma's `cloudflare-ddns` service
+(`satsuma/core/ddns.nix`) updates their address, and tofu ignores changes to
+`content`, so an IP change does not show up as drift. Tofu still manages the
+name, TTL and proxy setting.
 
 ## State encryption
 
