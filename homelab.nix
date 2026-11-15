@@ -30,6 +30,7 @@ let
       address = "10.0.10.72";
       user = "root";
     };
+    tangerine.address = "10.0.10.41";
   };
 
   hostNames = builtins.attrNames hosts; # sorted

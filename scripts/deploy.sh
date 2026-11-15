@@ -8,7 +8,8 @@
 #
 # Hosts are reached through the ssh aliases the flake installs on every
 # NixOS host (`programs.ssh.extraConfig`), so there are no addresses to keep
-# in sync here. `lime` is nix-darwin and has to be deployed on the Mac.
+# in sync here. `lime` and `tangerine` are nix-darwin and have to be deployed
+# on the Mac itself.
 set -euo pipefail
 
 repo_root=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/.." && pwd)
@@ -25,8 +26,8 @@ Options:
   -k, --keep-going  continue after a host fails
   -h, --help        show this help
 
-lime is a nix-darwin host; the script prints the command to run on the Mac
-instead of trying to deploy it remotely.
+lime and tangerine are nix-darwin hosts; the script prints the command to run
+on the Mac instead of trying to deploy it remotely.
 EOF
 }
 
@@ -47,7 +48,7 @@ while (($#)); do
     all)
       targets+=(satsuma bergamot pomelo)
       ;;
-    satsuma | bergamot | pomelo | lime)
+    satsuma | bergamot | pomelo | lime | tangerine)
       targets+=("$1")
       ;;
     *)
@@ -80,13 +81,13 @@ hostname_of() {
   esac
 }
 
-deploy_lime() {
-  cat <<'EOF'
-==> lime is nix-darwin, so it is deployed on the Mac:
+deploy_darwin() {
+  cat <<EOF
+==> $1 is nix-darwin, so it is deployed on the Mac:
 
-    ssh lime
+    ssh $1
     cd ~/nixos-homelab && git pull
-    sudo darwin-rebuild switch --flake .#lime
+    sudo darwin-rebuild switch --flake .#$1
 EOF
 }
 
@@ -94,8 +95,8 @@ failed=()
 deployed=0
 
 for host in "${targets[@]}"; do
-  if [[ $host == lime ]]; then
-    deploy_lime
+  if [[ $host == lime || $host == tangerine ]]; then
+    deploy_darwin "$host"
     continue
   fi
 

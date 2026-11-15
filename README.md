@@ -1,6 +1,6 @@
 # nixos-homelab
 
-One flake for the whole homelab: three NixOS machines, one macOS machine, and
+One flake for the whole homelab: three NixOS machines, two macOS machines, and
 the packages/services that tie them together.
 
 | Host | Config | Platform | Address | Role |
@@ -9,6 +9,7 @@ the packages/services that tie them together.
 | `bergamot` (hostname `mail`) | `bergamot/` | NixOS (unstable) | `100.91.236.114` (Tailscale) | OVH VPS: Stalwart mail server, offsite backups |
 | `pomelo` | `pomelo/` | NixOS (unstable) | `10.0.10.40` | Desktop |
 | `lime` | `lime/` | nix-darwin (aarch64) | `10.0.10.73` | Mac mini: iMessage bridge, digest service, Jellyfin |
+| `tangerine` | `tangerine/` | nix-darwin (aarch64) | `10.0.10.41` | MacBook Pro laptop |
 
 See [docs/Setup Overview.md](docs/Setup%20Overview.md) for hardware and the full
 service inventory, and [docs/IP Address.md](docs/IP%20Address.md) for the rest of
@@ -29,8 +30,8 @@ scripts/deploy.sh -n all         # print the commands without running them
 scripts/deploy.sh -k all         # keep going if one host fails
 ```
 
-`lime` is nix-darwin and cannot be deployed from Linux; `scripts/deploy.sh lime`
-prints the command to run on the Mac. The manual equivalents:
+`lime` and `tangerine` are nix-darwin and cannot be deployed from Linux;
+`scripts/deploy.sh lime` (or `tangerine`) prints the command to run on the Mac. The manual equivalents:
 
 ```sh
 # satsuma (also the canonical checkout at /etc/nixos)
@@ -42,8 +43,9 @@ sudo nixos-rebuild switch --flake /etc/nixos#bergamot --target-host root@bergamo
 # pomelo
 sudo nixos-rebuild switch --flake /etc/nixos#pomelo
 
-# lime (on the Mac)
+# lime / tangerine (on the Mac)
 sudo darwin-rebuild switch --flake ~/nixos-homelab#lime
+sudo darwin-rebuild switch --flake ~/nixos-homelab#tangerine
 ```
 
 To verify without switching, add `build` instead of `switch`. satsuma
@@ -54,16 +56,17 @@ you are holding a change back, stop `nixos-upgrade.timer` first.
 
 ```
 .
-├── flake.nix              # inputs + the four host configurations
+├── flake.nix              # inputs + the five host configurations
 ├── homelab.nix            # data: addresses, users/keys, GID, domain, dotfiles
 ├── common-nixos.nix       # every NixOS host
-├── common-darwin.nix      # lime
+├── common-darwin.nix      # lime + tangerine
 ├── server.nix             # satsuma + bergamot only
 ├── satsuma/               # one file per service, grouped by function
 │                          #   (system/ holds kernel, power, storage, upgrades)
 ├── bergamot/              # nixosConfigurations.bergamot (hostname mail)
 ├── pomelo/                # desktop (+ nfs.nix)
-├── lime/                  # nix-darwin configuration
+├── lime/                  # nix-darwin: Mac mini
+├── tangerine/             # nix-darwin: laptop
 ├── pkgs/                  # local derivations (matrix-mcp, mindroom-nio, kiro-gateway)
 ├── dots/                  # dotfiles linked into the hosts (via homelab.nix)
 ├── docs/                  # per-topic runbooks (Obsidian vault)

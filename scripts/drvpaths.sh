@@ -14,6 +14,7 @@ targets=(
   nixosConfigurations.bergamot.config.system.build.toplevel
   nixosConfigurations.pomelo.config.system.build.toplevel
   darwinConfigurations.lime.system
+  darwinConfigurations.tangerine.system
 )
 
 for t in "${targets[@]}"; do
