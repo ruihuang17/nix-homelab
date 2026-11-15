@@ -1,38 +1,49 @@
+# github.com
 Host github.com
     HostName github.com
     User git
-    IdentityFile ~/.ssh/general
 
-Host bergamot
-    HostName 100.91.236.114
+# DNS Server
+Host orange
+    HostName 10.0.10.23
     User root
 
+# Desktop
+Host pomelo
+    HostName 10.0.10.40
+    User rhuang
+
+# Laptop Macbook
+Host tangerine
+    HostName 10.0.10.41
+    User rhuang
+
+# Main server
+Host satsuma
+    HostName 10.0.10.72
+    User root
+
+# Mac mini server
+Host lime
+    HostName 10.0.10.73
+    User rhuang
+
+# Homeassistant
 Host homeassistant
     HostName 10.0.10.74
     Port 22222
     User root
 
-Host lime
-    HostName 10.0.10.73
-
-Host orange
-    HostName 10.0.10.23
-
-Host pomelo
-    HostName 10.0.10.40
-    User rhuang
-
-Host satsuma
-    HostName 10.0.10.72
+# OVHcloud VPS
+Host bergamot
+    HostName 100.91.236.114
     User root
-
-Host tangerine
-    HostName 10.0.10.41
 
 # Every homelab machine uses the same key; on satsuma root has its own
 # copy at /root/.ssh/general, on lime and pomelo rhuang has ~/.ssh/general.
-Host bergamot homeassistant lime orange pomelo satsuma tangerine
+Host *
     IdentityFile ~/.ssh/general
+    IdentityAgent ~/.bitwarden-ssh-agent.sock=
     ControlMaster auto
     ControlPath ~/.ssh/cm-%C
     ControlPersist 1h
