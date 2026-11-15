@@ -5,8 +5,10 @@ let
   mailHost = "mail.estrogenuinely.ca";
 
   # kanidm LDAPS endpoint, reached privately over the Tailscale network.
-  # satsuma is the kanidm host; MagicDNS resolves this name on the tailnet.
-  kanidmLdapUrl = "ldaps://satsuma.tailf59fe4.ts.net:3636";
+  # satsuma is the kanidm host. Its tailnet IP rather than the MagicDNS name,
+  # so the endpoint survives a tailnet change (the ts.net suffix is per tailnet;
+  # the IP can be set back in the admin console). See docs/Tailscale.md.
+  kanidmLdapUrl = "ldaps://100.72.25.50:3636";
   kanidmBaseDn = "dc=idm,dc=estrogenuinely,dc=ca";
 
   # The nixpkgs `stalwart.webadmin` derivation (v0.1.37) fails to build from
@@ -328,8 +330,7 @@ in
         tls = {
           enable = false; # url already specifies ldaps:// (implicit TLS)
           # kanidm's LDAPS cert is for idm.estrogenuinely.ca, but we connect
-          # over the tailnet hostname satsuma.tailf59fe4.ts.net, so the cert
-          # name will not match. The connection is already encrypted and
+          # to satsuma's tailnet IP, so the cert name will not match. The connection is already encrypted and
           # authenticated end-to-end by Tailscale (WireGuard), so we accept
           # the kanidm certificate without hostname verification.
           allow-invalid-certs = true;

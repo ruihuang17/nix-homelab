@@ -117,6 +117,7 @@ diff scripts/drvpaths.baseline /tmp/after
 | [OpenCode](docs/OpenCode.md) | Centralised OpenCode + agents |
 | [Vaultwarden CLI](docs/Vaultwarden%20CLI.md) | `rbw` setup and agent rules |
 | [Hermes](docs/Hermes.md) | Hermes agent |
+| [Tailscale](docs/Tailscale.md) | Tailnet dependencies and migration plan |
 | [lime (macOS)](docs/lime%20(macOS).md) | Mac mini specifics |
 | [iMessage Digest](docs/iMessage%20Digest.md) | Digest service on `lime` |
 | [SMS Matrix Bridge](docs/SMS%20Matrix%20Bridge.md) | Pixel SMS bridge |

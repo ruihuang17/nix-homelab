@@ -33,6 +33,15 @@
     # Allow SSH only on the Tailscale interface.
     firewall.interfaces."tailscale0".allowedTCPPorts = [ 22 ];
 
+    # TEMPORARY (tailnet migration, docs/Tailscale.md): SSH from home's public
+    # IPv4 so the VPS stays reachable while it moves tailnets. Remove after.
+    firewall.extraCommands = ''
+      iptables -A nixos-fw -p tcp -s 173.35.163.247/32 --dport 22 -j nixos-fw-accept
+    '';
+    firewall.extraStopCommands = ''
+      iptables -D nixos-fw -p tcp -s 173.35.163.247/32 --dport 22 -j nixos-fw-accept 2>/dev/null || true
+    '';
+
     # Static IPv6 (OVH). The gateway sits outside the advertised prefix, so
     # we add an explicit on-link /128 route to it before using it as the
     # default gateway (the standard OVH IPv6 arrangement).

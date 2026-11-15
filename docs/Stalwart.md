@@ -35,7 +35,7 @@ no offline directory lookup (inbound mail to a user who never logged in is rejec
 
 ```
 Thunderbird ──IMAP/SMTP──▶ Stalwart (vps)  ──LDAPS over Tailscale──▶ kanidm (satsuma)
-                              │                                      ldaps://satsuma.tailf59fe4.ts.net:3636
+                              │                                      ldaps://100.72.25.50:3636
           other MTAs ──:25──▶ │ (inbound, direct)
                               └──:587 STARTTLS + SASL──▶ AWS SES (us-east-2) ──▶ internet (outbound)
 ```
@@ -123,7 +123,7 @@ directory = "kanidm"
 
 [directory.kanidm]
 type = "ldap"
-url = "ldaps://satsuma.tailf59fe4.ts.net:3636"
+url = "ldaps://100.72.25.50:3636"
 base-dn = "dc=idm,dc=estrogenuinely,dc=ca"
 
 [directory.kanidm.bind]                 # service account, used for lookups
