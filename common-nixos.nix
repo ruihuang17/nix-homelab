@@ -32,13 +32,6 @@ let
     map (n: lib.concatStringsSep "/" (lib.take n parts)) (lib.range 1 (lib.length parts - 1));
 
   allDirs = lib.unique (lib.concatMap parentDirs (lib.attrNames homelab.dotfiles));
-
-  githubSshConfig = ''
-    Host github.com
-        HostName github.com
-        User git
-        IdentityFile ~/.ssh/general
-  '';
 in
 {
   nixpkgs.config.allowUnfree = true;
@@ -96,9 +89,10 @@ in
   };
 
   # SSH aliases for every homelab machine, plus one shared control connection
-  # per host. mkAfter keeps the postgres-backup `Host bergamot` block (which
-  # must win: ssh uses the first value it finds) ahead of these.
-  programs.ssh.extraConfig = lib.mkAfter (githubSshConfig + "\n" + homelab.sshConfig);
+  # per host. mkAfter keeps the postgres-backup `Host bergamot-backup` block
+  # ahead of these (ssh uses the first value it finds). Add a new host to
+  # dots/ssh/config as well as to homelab.nix.
+  programs.ssh.extraConfig = lib.mkAfter (builtins.readFile ./dots/ssh/config);
 
   programs.git = {
     enable = true;

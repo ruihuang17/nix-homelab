@@ -1,46 +1,26 @@
-# Data shared by every host: addresses, ssh aliases, users and keys, the
-# storage GID, the domain and the dotfiles map.
+# Data shared by every host: addresses, users and keys, the storage GID, the
+# domain and the dotfiles map. The ssh aliases live in dots/ssh/config.
 #
 # This is a plain attrset, not a NixOS module. Import it as
 # `let homelab = import ../homelab.nix; in` and read the values you need.
 # Nothing here defines options, so a host only gets what it asks for.
 let
-  # LAN host table. `address` is what other hosts dial; `port` and `user` are
-  # only present when they differ from the ssh default (22, current user).
+  # LAN host table. `address` is what other hosts dial; dots/ssh/config holds
+  # the matching ssh aliases.
   hosts = {
-    homeassistant = {
-      address = "10.0.10.74";
-      port = 22222;
-      user = "root";
-    };
+    homeassistant.address = "10.0.10.74";
     lime.address = "10.0.10.73";
     bergamot = {
       # The OVH VPS. networking.hostName stays "mail" (reverse DNS requires it);
       # this is only the repo/flake name. Reached over Tailscale: the VPS only
       # accepts ssh on tailscale0.
       address = "100.91.236.114";
-      user = "root";
     };
     orange.address = "10.0.10.23";
-    pomelo = {
-      address = "10.0.10.40";
-      user = "rhuang";
-    };
-    satsuma = {
-      address = "10.0.10.72";
-      user = "root";
-    };
+    pomelo.address = "10.0.10.40";
+    satsuma.address = "10.0.10.72";
     tangerine.address = "10.0.10.41";
   };
-
-  hostNames = builtins.attrNames hosts; # sorted
-
-  # "Host lime\n    HostName 10.0.10.73\n" etc. Trailing newline per block.
-  sshHostBlock =
-    name: h:
-    "Host ${name}\n    HostName ${h.address}\n"
-    + (if h ? port then "    Port ${toString h.port}\n" else "")
-    + (if h ? user then "    User ${h.user}\n" else "");
 in
 {
   inherit hosts;
@@ -52,20 +32,6 @@ in
   lanCidr = "10.0.10.0/24";
   lanGateway = "10.0.10.1";
   domain = "estrogenuinely.ca";
-
-  # Alias block for ~/.ssh/config, plus one shared control connection per host.
-  sshConfig =
-    builtins.concatStringsSep "\n" (map (n: sshHostBlock n hosts.${n}) hostNames)
-    + "\n"
-    + ''
-      # Every homelab machine uses the same key; on satsuma root has its own
-      # copy at /root/.ssh/general, on lime and pomelo rhuang has ~/.ssh/general.
-      Host ${builtins.concatStringsSep " " hostNames}
-          IdentityFile ~/.ssh/general
-          ControlMaster auto
-          ControlPath ~/.ssh/cm-%C
-          ControlPersist 1h
-    '';
 
   # uid + ssh key per person account. Hosts decide which of them to create:
   # satsuma and mail get both, pomelo only rhuang, lime manages rhuang itself.

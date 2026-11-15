@@ -40,7 +40,7 @@ Config is a flake in `/etc/nixos` (a git repo that is pushed to GitHub). The fla
 
 Layout:
 - `flake.nix`: inputs are nixpkgs-unstable, agenix and nix-darwin.
-- `homelab.nix`: plain data (addresses, ssh aliases, user uid/keys, storage GID, domain, dotfiles), imported, not a module.
+- `homelab.nix`: plain data (addresses, user uid/keys, storage GID, domain, dotfiles), imported, not a module. The ssh aliases are a static file, `dots/ssh/config`.
 - `common-nixos.nix`: shared by the NixOS hosts (users, ssh, fish, tmux, git, CLI packages, dotfiles).
 - `common-darwin.nix`: the macOS counterpart, imported by lime.
 - `server.nix`: satsuma + bergamot only (Lena, root keys, subnet-router Tailscale, node_exporter).
