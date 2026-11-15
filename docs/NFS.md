@@ -12,11 +12,14 @@ registers them with `exportfs`.
 | Dataset | Mountpoint | Allowed clients | `sharenfs` |
 | --- | --- | --- | --- |
 | `hdd/mediaSrv` | `/hdd/mediaSrv` | LAN `10.0.10.0/24` | `rw=@10.0.10.0/24,no_root_squash,insecure` |
-| `hdd/data` | `/hdd/data` | `pomelo` `10.0.10.40/32`, `tangerine` `10.0.10.41/32` | `rw=10.0.10.40/32:10.0.10.41/32,no_root_squash,no_all_squash` |
-| `hdd/backup` | `/hdd/backup` | `pomelo` `10.0.10.40/32`, `tangerine` `10.0.10.41/32` | `rw=10.0.10.40/32:10.0.10.41/32,no_root_squash` |
-| `zpool/data` | `/ssd-data` | `pomelo` `10.0.10.40/32`, `tangerine` `10.0.10.41/32` | `rw=10.0.10.40/32:10.0.10.41/32,no_root_squash` |
+| `hdd/data` | `/hdd/data` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash,no_all_squash` |
+| `hdd/backup` | `/hdd/backup` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash` |
+| `zpool/data` | `/ssd-data` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash` |
 
-tangerine was added to the three single-host exports on 2026-11-15.
+tangerine is not in `sharenfs`. It needs different options from pomelo, and
+`sharenfs` applies one option set to every host, so its entries are in
+`/etc/exports` (`services.nfs.server.exports` in `satsuma/system/storage.nix`).
+`exportfs` serves both files. See the tangerine section below.
 
 `zpool/data` is the only export on the NVMe mirror rather than the HDD pool.
 It holds working data that benefits from SSD latency — currently the
@@ -100,24 +103,46 @@ TCP/UDP 111 and 20048. If automountd is disabled, access fails with
 opened; without it, Jellyfin can open a media file but hang on the first read.
 The Mac only reads media, so local locking is not needed.
 
-### tangerine (laptop, 10.0.10.41)
+### tangerine (laptop, 10.0.10.41 / Tailscale 100.86.214.60)
 
-satsuma exports the same four datasets to tangerine as to pomelo, but nothing
-mounts them automatically: there is no autofs map on the laptop. Mount by hand
-when on the LAN (NFSv3, same reasons as lime):
+Mounted on demand from Finder, not automatically. Go → Connect to Server:
+
+| Share | URL |
+| --- | --- |
+| data | `nfs://100.72.25.50/hdd/data` |
+| backup | `nfs://100.72.25.50/hdd/backup` |
+| media | `nfs://100.72.25.50/hdd/mediaSrv` |
+| ssd | `nfs://100.72.25.50/ssd-data` |
+
+`100.72.25.50` is satsuma's Tailscale address and works at home and away. On
+the LAN `10.0.10.72` works too.
+
+Exports for tangerine are in `/etc/exports`, for both its LAN and Tailscale
+addresses (traffic to `10.0.10.72` can go through the tunnel, because satsuma
+advertises the LAN as a subnet route):
+
+```
+<path>  10.0.10.41/32(rw,insecure,root_squash,...) 100.86.214.60/32(rw,insecure,root_squash,...)
+```
+
+- **`insecure` is required for Finder.** Finder mounts as the logged-in user,
+  and macOS only lets root bind a reserved port. With `resvport` the mount
+  fails on the Mac with "Operation not permitted" before anything reaches
+  satsuma; without it a `secure` export rejects the client. Do not put
+  `nfs.client.mount.options = resvport` in the laptop's `/etc/nfs.conf`.
+- **The cost:** any program on the laptop can send any uid/gid, and so has the
+  `media` group's access to these datasets. `root_squash` only maps uid 0.
+- tangerine's `rhuang` is uid 501, not a satsuma user, so access comes from
+  the `storage` group (GID 3000). Files it creates are owned by `501:20` on
+  satsuma.
+- If tangerine's Tailscale address changes, update `storage.nix`.
+
+From Terminal:
 
 ```bash
 mkdir -p ~/NAS/data
-mount -t nfs -o nfsvers=3,proto=tcp,port=2049,mountport=20048,resvport,rw,nolocks,soft \
-  10.0.10.72:/hdd/data ~/NAS/data
-umount ~/NAS/data
+mount_nfs -o vers=3,noresvport,nolocks,soft 100.72.25.50:/hdd/data ~/NAS/data
 ```
-
-Or use Finder: Go → Connect to Server → `nfs://10.0.10.72/hdd/data`.
-
-tangerine's `rhuang` is uid 501, which is not a satsuma user, so access comes
-from the `storage` group (GID 3000). Files it creates are owned by uid 501 on
-satsuma, and it cannot write to paths that are not group-writable by `media`.
 
 ## Permissions
 

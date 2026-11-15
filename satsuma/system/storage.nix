@@ -18,6 +18,26 @@
     options zfs zfs_txg_timeout=30
   '';
 
+  # tangerine (macOS laptop) needs options that differ from pomelo's, and ZFS
+  # sharenfs applies one option set to every host, so its entries live in
+  # /etc/exports instead; exportfs merges them with /etc/exports.d/zfs.exports.
+  # Both its LAN and Tailscale addresses, since traffic can take either path.
+  # `insecure` because Finder mounts as the user, and macOS only lets root
+  # bind a reserved port; `root_squash` so root on the laptop is not root
+  # here; `mountpoint` skips an export whose dataset is not mounted.
+  # See docs/NFS.md.
+  services.nfs.server.exports =
+    let
+      opts = "rw,insecure,root_squash,no_subtree_check,mountpoint";
+      tangerine = "10.0.10.41/32(${opts}) 100.86.214.60/32(${opts})";
+    in
+    ''
+      /hdd/backup    ${tangerine}
+      /hdd/data      ${tangerine}
+      /ssd-data      ${tangerine}
+      /hdd/mediaSrv  100.86.214.60/32(${opts})
+    '';
+
   # Working data on the NVMe mirror (fast). Exported to pomelo with the ZFS
   # `sharenfs` property; see docs/NFS.md. Same pool as /, so it is required at
   # boot and gets no `nofail`. The mountpoint is /ssd-data, whose escaped
