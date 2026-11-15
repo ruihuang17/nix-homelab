@@ -7,6 +7,8 @@
     wechat
     vesktop
     kitty-bin
+    rbw
+    pinentry_mac # rbw is configured with `pinentry = "pinentry-mac"`
   ];
 
   homebrew = {
