@@ -136,5 +136,15 @@
           agenix.darwinModules.default
         ];
       };
+
+      darwinConfigurations.tangerine = nix-darwin.lib.darwinSystem {
+        system = "aarch64-darwin";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./tangerine/configuration.nix
+          ./common-darwin.nix
+          agenix.darwinModules.default
+        ];
+      };
     };
 }
