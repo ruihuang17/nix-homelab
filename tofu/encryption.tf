@@ -1,5 +1,5 @@
 variable "state_passphrase" {
-  description = "Passphrase for state and plan encryption. Set via TF_VAR_state_passphrase from tofu_ovh_env.age."
+  description = "Passphrase for state and plan encryption. Set via TF_VAR_state_passphrase from tofu_env.age."
   type        = string
   sensitive   = true
 

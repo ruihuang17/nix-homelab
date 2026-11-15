@@ -23,3 +23,16 @@ output "s3_env_state" {
     AWS_SECRET_ACCESS_KEY=${ovh_cloud_project_user_s3_credential.s3["state"].secret_access_key}
   EOT
 }
+
+# SES SMTP credentials for bergamot (Stalwart relay and satsuma-watcher).
+#   tofu output -raw ses_smtp_user | agenix -e ses_smtp_user.age
+#   tofu output -raw ses_smtp_pass | agenix -e ses_smtp_pass.age
+output "ses_smtp_user" {
+  sensitive = true
+  value     = aws_iam_access_key.mail.id
+}
+
+output "ses_smtp_pass" {
+  sensitive = true
+  value     = aws_iam_access_key.mail.ses_smtp_password_v4
+}

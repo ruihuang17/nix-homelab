@@ -222,8 +222,12 @@ echo | openssl s_client -connect mail.estrogenuinely.ca:993 -servername mail.est
   can send). Inbound is untouched (direct on 25; user confirmed inbound 25 is fine).
 - Endpoint: **`email-smtp.us-east-2.amazonaws.com:587`** (STARTTLS). NOT `...amazonses.com`
   (that name does not exist; it cost a long detour). Reachable from the vps.
-- Credentials: SES console → SMTP settings → Create SMTP credentials (IAM user `ovh`). Stored
-  as `ses_smtp_user.age` / `ses_smtp_pass.age`. Don't use Mail Manager credentials; that is a
+- Credentials: IAM user `mail.estrogenuinely.ca`, managed by tofu (`tofu/ses.tf`), allowed only
+  `ses:SendRawEmail` for this identity. Stored as `ses_smtp_user.age` / `ses_smtp_pass.age` and
+  used by Stalwart and `satsuma-watcher`. Rotated 2026-11-15 (replaced the console-made `ovh` user).
+  To rotate: `tofu apply -replace=aws_iam_access_key.mail`, pipe `tofu output -raw ses_smtp_user`
+  / `ses_smtp_pass` into `agenix -e` (no trailing newline), deploy bergamot, then
+  `systemctl restart stalwart`. Don't use Mail Manager credentials; that is a
   different product with different endpoints.
 - Stalwart 0.15 config:
 

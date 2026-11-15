@@ -8,6 +8,7 @@ this directory creates the OVH resources they depend on.
 | `storage.tf` | Buckets `satsuma-backup` and `satsuma-tofu-state`, each with its own S3 user, credential and bucket-scoped policy |
 | `vps.tf` | Reads the existing mail VPS (data source only) |
 | `dns.tf` | Cloudflare DNS records for `estrogenuinely.ca` and `ruihuang.io` (all DNS-only) |
+| `ses.tf` | AWS SES identity `estrogenuinely.ca` (us-east-2), its MAIL FROM and configuration set, and the `mail.estrogenuinely.ca` SMTP user for bergamot |
 | `outputs.tf` | Sensitive `KEY=value` blocks in the format `restic_s3_env.age` uses |
 | `encryption.tf` | Client-side AES-GCM encryption of state and plans (PBKDF2 passphrase) |
 | `backend.tf.example` | S3 remote state on OVH with native locking |
@@ -33,14 +34,21 @@ Keep the keys in an agenix secret and load them into the shell:
 
 ```bash
 cd /etc/nixos/satsuma/secrets
-agenix -e tofu_ovh_env.age -i /etc/ssh/ssh_host_ed25519_key
-set -a; source <(agenix -d tofu_ovh_env.age -i ~/.ssh/id_ed25519); set +a
+agenix -e tofu_env.age -i /etc/ssh/ssh_host_ed25519_key
+set -a; source <(agenix -d tofu_env.age -i ~/.ssh/id_ed25519); set +a
 ```
 
-The file holds `OVH_ENDPOINT=ovh-ca`, `OVH_APPLICATION_KEY`,
-`OVH_APPLICATION_SECRET`, `OVH_CONSUMER_KEY`, `TF_VAR_state_passphrase`, and
-the state user's `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` for the backend.
-A copy lives in Vaultwarden as "Tofu OVHcloud API Key".
+`tofu_env.age` holds every credential tofu needs:
+
+| Variable | Used by |
+| --- | --- |
+| `OVH_ENDPOINT=ovh-ca`, `OVH_APPLICATION_KEY`, `OVH_APPLICATION_SECRET`, `OVH_CONSUMER_KEY` | OVH provider |
+| `TF_VAR_state_passphrase` | state encryption |
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` | S3 state backend (OVH "state" user, not AWS) |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare provider |
+| `TF_VAR_aws_access_key_id`, `TF_VAR_aws_secret_access_key` | AWS provider (SES) |
+
+A copy of the OVH keys lives in Vaultwarden as "Tofu OVHcloud API Key".
 
 The control panel's API keys page lists applications, not consumer keys, and
 deleting an application revokes every key under it. Keep one consumer key per
@@ -49,16 +57,10 @@ and in Vaultwarden, run `tofu plan`, then delete the old application.
 
 ### Cloudflare
 
-The Cloudflare provider reads `CLOUDFLARE_API_TOKEN`. The token needs
-Zone → DNS → Edit and Zone → Zone → Read on both zones. The ACME token in
-`cloudflare_api.age` has those rights but uses the name
-`CLOUDFLARE_DNS_API_TOKEN`, so either add a dedicated token to
-`tofu_ovh_env.age` or export it under the other name:
-
-```bash
-set -a; source <(agenix -d cloudflare_api.age -i ~/.ssh/id_ed25519); set +a
-export CLOUDFLARE_API_TOKEN="$CLOUDFLARE_DNS_API_TOKEN"
-```
+The Cloudflare provider reads `CLOUDFLARE_API_TOKEN` from `tofu_env.age`.
+The token needs Zone → DNS → Edit and Zone → Zone → Read on both zones. It is
+currently the same token as the hosts' ACME token (`cloudflare_api.age`), so
+rotating one means updating both.
 
 Records in `dns.tf` are keyed `<zone>/<name>/<type>[/<n>]`, with `@` for the
 apex. Changes made in the Cloudflare dashboard show up as drift in
