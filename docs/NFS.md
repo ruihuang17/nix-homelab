@@ -12,9 +12,11 @@ registers them with `exportfs`.
 | Dataset | Mountpoint | Allowed clients | `sharenfs` |
 | --- | --- | --- | --- |
 | `hdd/mediaSrv` | `/hdd/mediaSrv` | LAN `10.0.10.0/24` | `rw=@10.0.10.0/24,no_root_squash,insecure` |
-| `hdd/data` | `/hdd/data` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash,no_all_squash` |
-| `hdd/backup` | `/hdd/backup` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash` |
-| `zpool/data` | `/ssd-data` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash` |
+| `hdd/data` | `/hdd/data` | `pomelo` `10.0.10.40/32`, `tangerine` `10.0.10.41/32` | `rw=10.0.10.40/32:10.0.10.41/32,no_root_squash,no_all_squash` |
+| `hdd/backup` | `/hdd/backup` | `pomelo` `10.0.10.40/32`, `tangerine` `10.0.10.41/32` | `rw=10.0.10.40/32:10.0.10.41/32,no_root_squash` |
+| `zpool/data` | `/ssd-data` | `pomelo` `10.0.10.40/32`, `tangerine` `10.0.10.41/32` | `rw=10.0.10.40/32:10.0.10.41/32,no_root_squash` |
+
+tangerine was added to the three single-host exports on 2026-11-15.
 
 `zpool/data` is the only export on the NVMe mirror rather than the HDD pool.
 It holds working data that benefits from SSD latency — currently the
@@ -97,6 +99,25 @@ TCP/UDP 111 and 20048. If automountd is disabled, access fails with
 `nolocks` is required because the NFSv3 lock-manager (NLM) ports are not
 opened; without it, Jellyfin can open a media file but hang on the first read.
 The Mac only reads media, so local locking is not needed.
+
+### tangerine (laptop, 10.0.10.41)
+
+satsuma exports the same four datasets to tangerine as to pomelo, but nothing
+mounts them automatically: there is no autofs map on the laptop. Mount by hand
+when on the LAN (NFSv3, same reasons as lime):
+
+```bash
+mkdir -p ~/NAS/data
+mount -t nfs -o nfsvers=3,proto=tcp,port=2049,mountport=20048,resvport,rw,nolocks,soft \
+  10.0.10.72:/hdd/data ~/NAS/data
+umount ~/NAS/data
+```
+
+Or use Finder: Go → Connect to Server → `nfs://10.0.10.72/hdd/data`.
+
+tangerine's `rhuang` is uid 501, which is not a satsuma user, so access comes
+from the `storage` group (GID 3000). Files it creates are owned by uid 501 on
+satsuma, and it cannot write to paths that are not group-writable by `media`.
 
 ## Permissions
 
