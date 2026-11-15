@@ -3,6 +3,7 @@
 {
   imports = [
     ../common-darwin.nix
+    ./packages.nix
   ];
 
   networking.hostName = "tangerine";

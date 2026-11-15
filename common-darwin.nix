@@ -89,6 +89,7 @@ in
     if test "$TERM" != "dumb"
       ${pkgs.starship}/bin/starship init fish | source
     end
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   '';
 
   # The prompt uses Nerd Font glyphs. Only the Mac runs a terminal locally;
