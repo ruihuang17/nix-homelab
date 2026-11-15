@@ -103,11 +103,24 @@ in
         as = "sudo -u ${lib.escapeShellArg user}";
       in
       lib.concatStrings (
-        lib.mapAttrsToList (rel: src: ''
-          ${as} mkdir -p ${lib.escapeShellArg (dirOf "${home}/${rel}")}
-          ${as} ln -sfn ${src} ${lib.escapeShellArg "${home}/${rel}"}
-        '') homelab.dotfiles
+        lib.mapAttrsToList (
+          rel: src:
+          let
+            target = lib.escapeShellArg "${home}/${rel}";
+          in
+          ''
+            ${as} mkdir -p ${lib.escapeShellArg (dirOf "${home}/${rel}")}
+            # Keep a hand-written file instead of overwriting it.
+            if [ -e ${target} ] && [ ! -L ${target} ]; then
+              ${as} mv ${target} ${target}.before-nix-darwin
+            fi
+            ${as} ln -sfn ${src} ${target}
+          ''
+        ) homelab.dotfiles
       )
+      + ''
+        ${as} chmod 700 ${lib.escapeShellArg "${home}/.ssh"}
+      ''
     ) dotUsers
   );
 }

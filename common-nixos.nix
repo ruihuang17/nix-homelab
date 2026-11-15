@@ -121,7 +121,8 @@ in
     let
       u = config.users.users.${user};
     in
-    (map (d: "d ${u.home}/${d} - ${user} ${u.group} -") allDirs)
+    # ~/.ssh stays private; `d` would otherwise reset it to 0755.
+    (map (d: "d ${u.home}/${d} ${if d == ".ssh" then "0700" else "-"} ${user} ${u.group} -") allDirs)
     ++ (lib.mapAttrsToList (rel: src: "L+ ${u.home}/${rel} - - - - ${src}") homelab.dotfiles)
   ) dotUsers;
 }

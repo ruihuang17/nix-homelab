@@ -41,7 +41,7 @@ Host bergamot
 
 # Every homelab machine uses the same key; on satsuma root has its own
 # copy at /root/.ssh/general, on lime and pomelo rhuang has ~/.ssh/general.
-Host *
+Host * !bergamot-backup
     IdentityFile ~/.ssh/general
     IdentityAgent ~/.bitwarden-ssh-agent.sock=
     ControlMaster auto

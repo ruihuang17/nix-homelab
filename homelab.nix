@@ -1,5 +1,6 @@
 # Data shared by every host: addresses, users and keys, the storage GID, the
-# domain and the dotfiles map. The ssh aliases live in dots/ssh/config.
+# domain and the dotfiles map. The ssh aliases live in dots/ssh/config, which
+# is one of the dotfiles.
 #
 # This is a plain attrset, not a NixOS module. Import it as
 # `let homelab = import ../homelab.nix; in` and read the values you need.
@@ -59,5 +60,6 @@ in
     ".config/starship.toml" = ./dots/starship/starship.toml;
     ".config/kitty/kitty.conf" = ./dots/kitty/kitty.conf;
     ".config/kitty/catppuccin-mocha.conf" = ./dots/kitty/catppuccin-mocha.conf;
+    ".ssh/config" = ./dots/ssh/config;
   };
 }
