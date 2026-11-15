@@ -337,6 +337,14 @@ in
 
         rules.settings = {
           apiVersion = 1;
+          # Removing a rule from `groups` leaves it in Grafana's database;
+          # provisioned rules can only be dropped through deleteRules.
+          deleteRules = [
+            {
+              orgId = 1;
+              uid = "homelab-imessage-digest-stale";
+            }
+          ];
           groups = [
             {
               orgId = 1;
