@@ -1,4 +1,4 @@
-# nixos-homelab
+# nix-homelab
 
 One flake for the whole homelab: three NixOS machines, two macOS machines, and
 the packages/services that tie them together.
