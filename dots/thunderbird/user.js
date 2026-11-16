@@ -108,6 +108,7 @@ user_pref("mail.identity.id4.draft_folder", "imap://rui.huang17%40hotmail.com@ou
 user_pref("mail.identity.id4.archive_enabled", true);
 user_pref("mail.identity.id4.archives_folder_picker_mode", "1");
 user_pref("mail.identity.id4.archive_folder", "imap://rui.huang17%40hotmail.com@outlook.office365.com/Archive");
+user_pref("mail.identity.id4.archive_granularity", 0); // one folder, like Outlook's Archive
 
 user_pref("mail.smtpserver.smtp4.type", "smtp");
 user_pref("mail.smtpserver.smtp4.hostname", "smtp-mail.outlook.com");
