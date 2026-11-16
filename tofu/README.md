@@ -23,7 +23,7 @@ by the `import` block in `storage.tf`. It has `prevent_destroy` set.
 All credentials live in one agenix secret. Load them into the shell:
 
 ```bash
-cd /etc/nixos/satsuma/secrets
+cd /etc/nixos/hosts/satsuma/secrets
 agenix -e tofu_env.age -i /etc/ssh/ssh_host_ed25519_key
 set -a; source <(agenix -d tofu_env.age -i ~/.ssh/id_ed25519); set +a
 ```
@@ -70,7 +70,7 @@ apex. Changes made in the Cloudflare dashboard show up as drift in
 
 The home WAN records (`estrogenuinely.ca` A/AAAA, `ruihuang.io` A) are in
 `local.dynamic_records`. satsuma's `cloudflare-ddns` service
-(`satsuma/core/ddns.nix`) updates their address, and tofu ignores changes to
+(`hosts/satsuma/core/ddns.nix`) updates their address, and tofu ignores changes to
 `content`, so an IP change does not show up as drift. Tofu still manages the
 name, TTL and proxy setting.
 

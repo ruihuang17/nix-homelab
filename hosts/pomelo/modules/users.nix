@@ -1,6 +1,6 @@
 { ... }:
 let
-  homelab = import ../../homelab.nix;
+  homelab = import ../../../homelab.nix;
 in
 {
   users.groups.rhuang.gid = 1000;

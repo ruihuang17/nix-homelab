@@ -97,7 +97,7 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./satsuma/configuration.nix
+          ./hosts/satsuma/configuration.nix
           ./server.nix
           ./common-nixos.nix
           agenix.nixosModules.default
@@ -109,7 +109,7 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./bergamot/configuration.nix
+          ./hosts/bergamot/configuration.nix
           ./server.nix
           ./common-nixos.nix
           agenix.nixosModules.default
@@ -121,7 +121,7 @@
         system = "x86_64-linux";
         specialArgs = { inherit inputs; };
         modules = [
-          ./pomelo/configuration.nix
+          ./hosts/pomelo/configuration.nix
           ./common-nixos.nix
           nixosBase
         ];
@@ -131,7 +131,7 @@
         system = "aarch64-darwin";
         specialArgs = { inherit inputs; };
         modules = [
-          ./lime/configuration.nix
+          ./hosts/lime/configuration.nix
           ./common-darwin.nix
           agenix.darwinModules.default
         ];
@@ -141,7 +141,7 @@
         system = "aarch64-darwin";
         specialArgs = { inherit inputs; };
         modules = [
-          ./tangerine/configuration.nix
+          ./hosts/tangerine/configuration.nix
           ./common-darwin.nix
           agenix.darwinModules.default
         ];

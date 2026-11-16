@@ -26,9 +26,9 @@ no configuration changed.
 
 | Dependency | Where | Breaks if it changes |
 | --- | --- | --- |
-| satsuma `100.72.25.50` | `bergamot/satsuma-watcher.nix`, `bergamot/backup-target.nix` (`from=`), `bergamot/stalwart.nix` (LDAP) | satsuma-down alerts, offsite Postgres backup, mail logins |
-| bergamot `100.91.236.114` | `homelab.nix`, `dots/ssh/config`, `satsuma/backup/postgres-backup.nix`, Prometheus scrape | ssh to the VPS, backups, monitoring |
-| bergamot sshd only on `tailscale0` | `bergamot/configuration.nix` | all ssh access to the VPS |
+| satsuma `100.72.25.50` | `hosts/bergamot/satsuma-watcher.nix`, `hosts/bergamot/backup-target.nix` (`from=`), `hosts/bergamot/stalwart.nix` (LDAP) | satsuma-down alerts, offsite Postgres backup, mail logins |
+| bergamot `100.91.236.114` | `homelab.nix`, `dots/ssh/config`, `hosts/satsuma/backup/postgres-backup.nix`, Prometheus scrape | ssh to the VPS, backups, monitoring |
+| bergamot sshd only on `tailscale0` | `hosts/bergamot/configuration.nix` | all ssh access to the VPS |
 | satsuma subnet route + exit node | admin console approval | remote LAN access |
 | ACL policy, key expiry, MagicDNS | admin console | whatever they allow |
 
@@ -47,7 +47,7 @@ Done this way on 2026-11-15; reuse it if the tailnet changes again.
 1. Save the ACL policy, DNS settings and the key-expiry list from the old
    console. Create a one-time, pre-approved auth key in the new one.
 2. bergamot's sshd only listens on `tailscale0`, so add a temporary rule to
-   `bergamot/configuration.nix` for home's public IPv4 before you start:
+   `hosts/bergamot/configuration.nix` for home's public IPv4 before you start:
    ```nix
    networking.firewall.extraCommands = ''
      iptables -A nixos-fw -p tcp -s <home-ip>/32 --dport 22 -j nixos-fw-accept
@@ -79,8 +79,8 @@ Done this way on 2026-11-15; reuse it if the tailnet changes again.
 6. Remove the temporary ssh rule and deploy bergamot.
 
 If an address cannot be restored, update `homelab.nix`,
-`bergamot/satsuma-watcher.nix`, `bergamot/backup-target.nix` and
-`bergamot/stalwart.nix` together and deploy satsuma and bergamot.
+`hosts/bergamot/satsuma-watcher.nix`, `hosts/bergamot/backup-target.nix` and
+`hosts/bergamot/stalwart.nix` together and deploy satsuma and bergamot.
 
 ## Status of the 2026-11-15 move
 

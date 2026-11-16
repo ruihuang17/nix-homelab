@@ -9,7 +9,7 @@
   ...
 }:
 let
-  homelab = import ../../homelab.nix;
+  homelab = import ../../../homelab.nix;
   blackboxAddr = "127.0.0.1:9115";
 
   # ---------------------------------------------------------------------------

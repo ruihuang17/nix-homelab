@@ -6,7 +6,7 @@ default, pomelo and lime are opt-in. Nothing deploys on push.
 
 Flow: the runner joins the tailnet as `tag:ci` and SSHes to satsuma
 (`100.72.25.50`) with a key that is forced to run one script
-(`satsuma/system/ci-deploy.nix`). The script reads the host list the runner
+(`hosts/satsuma/system/ci-deploy.nix`). The script reads the host list the runner
 sends, rejects anything outside `satsuma bergamot pomelo lime`, runs
 `git pull --ff-only` in `/etc/nixos`, then `scripts/deploy.sh -k` for the NixOS
 hosts. For lime it SSHes from satsuma to the Mac, pulls `~/nix-homelab` and runs
@@ -26,7 +26,7 @@ skipped by the desktop being off; the job will report it failed.
 3. GitHub repo secrets:
    - `TS_OAUTH_CLIENT_ID`, `TS_OAUTH_SECRET`: from step 2.
    - `DEPLOY_SSH_KEY`: the private key matching the public key in
-     `satsuma/system/ci-deploy.nix`.
+     `hosts/satsuma/system/ci-deploy.nix`.
    - `SATSUMA_HOST_KEY`: `100.72.25.50 ssh-ed25519 AAAA...` (output of
      `ssh-keyscan -t ed25519 100.72.25.50`).
 4. Changes to `ci-deploy.nix` itself take effect only after a manual

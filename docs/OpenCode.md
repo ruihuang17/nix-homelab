@@ -98,10 +98,10 @@ the vhost.
 ### 1. Secret
 
 Generate a 48-hex-character password, encrypt it to the `satsuma` and `rhuang`
-age recipients, and register it in `satsuma/secrets/secrets.nix`:
+age recipients, and register it in `hosts/satsuma/secrets/secrets.nix`:
 
 ```bash
-cd /etc/nixos/satsuma/secrets
+cd /etc/nixos/hosts/satsuma/secrets
 printf 'OPENCODE_PASSWORD=%s\n' "$(openssl rand -hex 24)" > /tmp/oc-pw
 nix shell nixpkgs#age -c age \
   -r 'ssh-ed25519 AAAA…satsuma' \
@@ -115,7 +115,7 @@ directly.
 
 ### 2. NixOS module
 
-Add `satsuma/ai/opencode.nix`:
+Add `hosts/satsuma/ai/opencode.nix`:
 
 - `age.secrets.opencode-password`, mode `0400`, owner `opencode`.
 - `users.users.opencode`: system user, home `/var/lib/opencode`, group `users`,
@@ -132,7 +132,7 @@ Add `satsuma/ai/opencode.nix`:
 - `opencode-pair` helper: reads the secret as root, calls `POST /api/pair`,
   prints a one-time link with the external hostname.
 
-Import it from `satsuma/configuration.nix` and `git add` the new files (the
+Import it from `hosts/satsuma/configuration.nix` and `git add` the new files (the
 flake ignores untracked files).
 
 ### 3. Deploy
@@ -234,7 +234,7 @@ Two changes remove that hazard for normal rebuilds:
    Verified: a rebuild that changed both `Description` and the unit `.drv`
    kept the same `MainPID`.
 
-   Trade-off: edits to `satsuma/ai/opencode.nix` no longer take effect on their
+   Trade-off: edits to `hosts/satsuma/ai/opencode.nix` no longer take effect on their
    own. Apply them with `sudo systemctl restart opencode`, knowing that this
    does end the session.
 
@@ -304,10 +304,10 @@ Rolled out 2026-10-31 16:05 EDT.
 
 Changed files (staged, not committed):
 
-- `satsuma/ai/opencode.nix` (new)
-- `satsuma/configuration.nix` (import)
-- `satsuma/secrets/opencode-password.age` (new)
-- `satsuma/secrets/secrets.nix` (recipients)
+- `hosts/satsuma/ai/opencode.nix` (new)
+- `hosts/satsuma/configuration.nix` (import)
+- `hosts/satsuma/secrets/opencode-password.age` (new)
+- `hosts/satsuma/secrets/secrets.nix` (recipients)
 - `docs/OpenCode.md` (this file)
 
 State:
@@ -457,7 +457,7 @@ that gives the agent a Matrix seat as `@rhuang:estrogenuinely.ca`.
 ### OpenCode wiring
 
 The system-wide config at `/etc/opencode/opencode.json` (rendered from
-`satsuma/ai/opencode.nix`) adds:
+`hosts/satsuma/ai/opencode.nix`) adds:
 
 ```json
 {
@@ -532,7 +532,7 @@ protocols:
 | `uwaterloo` | `@uwaterloo.ca` | Microsoft Graph | UWaterloo disabled POP and IMAP for the M365 tenant in April 2020; Graph is the only API left. |
 
 Both are wired into `/etc/opencode/opencode.json` by
-`satsuma/ai/opencode.nix` (the `mcp.servers` block). OpenCode exposes them as
+`hosts/satsuma/ai/opencode.nix` (the `mcp.servers` block). OpenCode exposes them as
 `email.*` and `uwaterloo.*` in Code Mode.
 
 ### Self-hosted account (`email`)
@@ -560,12 +560,12 @@ Credentials live in agenix, not in Nix or the world-readable config:
    ```
 
    The helper prompts without echo, writes
-   `satsuma/secrets/email-mcp-pass.age` (no trailing newline), and `git add`s
+   `hosts/satsuma/secrets/email-mcp-pass.age` (no trailing newline), and `git add`s
    it, because the flake ignores untracked files.
 3. Rebuild: `sudo oc-rebuild`.
 
 `emailEnabled = builtins.pathExists ../secrets/email-mcp-pass.age` in
-`satsuma/ai/opencode.nix` means the server is simply absent from
+`hosts/satsuma/ai/opencode.nix` means the server is simply absent from
 `opencode.json` until the secret exists. That keeps a fresh checkout and the
 first deploy buildable.
 
@@ -621,7 +621,7 @@ sudo oc-rebuild
 
 ### Thunderbird on pomelo
 
-`pomelo/thunderbird.nix` creates a Nix-managed Thunderbird profile at
+`hosts/pomelo/thunderbird.nix` creates a Nix-managed Thunderbird profile at
 `~/.thunderbird/homelab`, seeds it with `user.js` for both accounts, and adds a
 `thunderbird-homelab` launcher. It is a separate profile, so the existing
 manual profile (and its Proton/CSClub accounts) is untouched. The first launch

@@ -6,7 +6,7 @@
   ...
 }:
 let
-  homelab = import ../../homelab.nix;
+  homelab = import ../../../homelab.nix;
 
   port = 4096;
   primaryHost = "opencode.local.estrogenuinely.ca";
@@ -21,7 +21,7 @@ let
   emailEnabled = builtins.pathExists emailSecret;
 
 
-  # Public recipients from satsuma/secrets/secrets.nix, embedded in the helper
+  # Public recipients from hosts/satsuma/secrets/secrets.nix, embedded in the helper
   # that encrypts a new mail password. These are public keys, not secrets.
   ageRecipients = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMp74d/OCwnetejX24slNj+6kIiEmarYX8j8+Zuku8IF"
@@ -296,7 +296,7 @@ in
   # client_secret during refresh; the local proxy drops it and talks to
   # Microsoft. The refresh token itself is in agenix and never in this file.
   environment.etc."email-mcp-uw/email-mcp/config.toml".text = ''
-    # Managed by satsuma/ai/opencode.nix.
+    # Managed by hosts/satsuma/ai/opencode.nix.
     [[accounts]]
     name = "uwaterloo"
     email = "r232huan@uwaterloo.ca"
@@ -333,7 +333,7 @@ in
   # Personal Hotmail account: same Thunderbird client and scopes, but the
   # consumers tenant, its own proxy instance, and its own token state.
   environment.etc."email-mcp-hotmail/email-mcp/config.toml".text = ''
-    # Managed by satsuma/ai/opencode.nix.
+    # Managed by hosts/satsuma/ai/opencode.nix.
     [[accounts]]
     name = "hotmail"
     email = "rui.huang17@hotmail.com"
@@ -501,7 +501,7 @@ in
         echo "run as root: sudo email-mcp-set-password" >&2
         exit 1
       fi
-      target=/etc/nixos/satsuma/secrets/email-mcp-pass.age
+      target=/etc/nixos/hosts/satsuma/secrets/email-mcp-pass.age
       tmp=$(mktemp)
       trap 'rm -f "$tmp"' EXIT
       if [ -t 0 ]; then

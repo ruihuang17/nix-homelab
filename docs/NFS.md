@@ -3,7 +3,7 @@
 Documented 2026-10-20.
 
 satsuma runs the kernel NFS server (`services.nfs.server.enable = true` in
-`satsuma/hardware-configuration.nix`) and exports three ZFS datasets with the
+`hosts/satsuma/hardware-configuration.nix`) and exports three ZFS datasets with the
 ZFS `sharenfs` property. `/etc/exports` is empty; ZFS generates the exports and
 registers them with `exportfs`.
 
@@ -18,14 +18,14 @@ registers them with `exportfs`.
 
 tangerine is not in `sharenfs`. It needs different options from pomelo, and
 `sharenfs` applies one option set to every host, so its entries are in
-`/etc/exports` (`services.nfs.server.exports` in `satsuma/system/storage.nix`).
+`/etc/exports` (`services.nfs.server.exports` in `hosts/satsuma/system/storage.nix`).
 `exportfs` serves both files. See the tangerine section below.
 
 `zpool/data` is the only export on the NVMe mirror rather than the HDD pool.
 It holds working data that benefits from SSD latency — currently the
 `career-ops` checkout at `/ssd-data/career-ops`, moved there from
 `/root/career-ops` on 2026-11-06. It mounts at boot (declared in
-`satsuma/system/storage.nix`, no `nofail`, since it shares `zpool` with `/`),
+`hosts/satsuma/system/storage.nix`, no `nofail`, since it shares `zpool` with `/`),
 and `zfs-share.service` is ordered after its `ssd\x2ddata.mount` unit.
 
 `hdd/backup/var` inherits its parent's `sharenfs`, but it is `canmount=off` and
@@ -195,5 +195,5 @@ systemctl status nfs-server
   `zfs share -a`, which only exports datasets that are already mounted. Because
   `/hdd/backup` is a separate fstab-generated mount unit, a switch that restarts
   both units at once could run `zfs share -a` first and rewrite
-  `/etc/exports.d/zfs.exports` as empty. `satsuma/configuration.nix` now orders
+  `/etc/exports.d/zfs.exports` as empty. `hosts/satsuma/configuration.nix` now orders
   `zfs-share.service` after `hdd-backup.mount` to prevent this.

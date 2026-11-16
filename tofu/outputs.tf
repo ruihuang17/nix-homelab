@@ -6,7 +6,7 @@ output "vps_display_name" {
   value = data.ovh_vps.mail.displayname
 }
 
-# Same shape as satsuma/secrets/restic_s3_env.age and the state backend env.
+# Same shape as hosts/satsuma/secrets/restic_s3_env.age and the state backend env.
 #   tofu output -raw s3_env_backup | agenix -e restic_s3_env.age
 output "s3_env_backup" {
   sensitive = true

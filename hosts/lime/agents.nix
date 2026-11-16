@@ -6,7 +6,7 @@
   ...
 }:
 let
-  homelab = import ../homelab.nix;
+  homelab = import ../../homelab.nix;
   home = "/Users/rhuang";
   logs = "${home}/Library/Logs";
 in

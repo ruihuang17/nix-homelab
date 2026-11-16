@@ -5,7 +5,7 @@ locals {
   }
 
   # Home WAN records. satsuma's cloudflare-ddns service keeps their content
-  # current (satsuma/core/ddns.nix); tofu owns everything else about them.
+  # current (hosts/satsuma/core/ddns.nix); tofu owns everything else about them.
   # The addresses here are only used when tofu creates a record from scratch.
   dynamic_records = {
     "estrogenuinely.ca/@/A"    = "173.35.163.247"

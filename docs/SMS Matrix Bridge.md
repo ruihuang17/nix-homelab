@@ -59,16 +59,16 @@ is only needed for **outbound**.
 ## Server side (satsuma, committed `d43bbc0` in /etc/nixos)
 
 - Appservice `id: sms`, namespaces `^@smsbot:` and `^@sms_.*:`. The registration is
-  an **agenix secret** — `satsuma/secrets/sms-appservice.age`, decrypted to
+  an **agenix secret** — `hosts/satsuma/secrets/sms-appservice.age`, decrypted to
   `/run/agenix/sms-appservice` (`matrix-synapse:matrix-synapse 440`) and referenced from
-  `app_service_config_files` in `satsuma/matrix/matrix.nix`. There is no plaintext
+  `app_service_config_files` in `hosts/satsuma/matrix/matrix.nix`. There is no plaintext
   `sms-registration.yaml` any more.
-- `satsuma/core/nginx.nix`: LAN vhost `matrix.local.estrogenuinely.ca` → `http://127.0.0.1:8008`
+- `hosts/satsuma/core/nginx.nix`: LAN vhost `matrix.local.estrogenuinely.ca` → `http://127.0.0.1:8008`
   (proxyWebsockets, estrogenuinely.ca wildcard ACME cert).
-- The wsproxy config is also an agenix secret (`satsuma/secrets/mautrix-wsproxy-config.age`
+- The wsproxy config is also an agenix secret (`hosts/satsuma/secrets/mautrix-wsproxy-config.age`
   → `/run/agenix/mautrix-wsproxy-config`); wsproxy runs with
   `-config /run/agenix/mautrix-wsproxy-config` and logs "Found 2 appservices".
-  `satsuma/matrix/matrix.nix` holds the wiring; there is no `/var/lib/mautrix-wsproxy/config.yaml`.
+  `hosts/satsuma/matrix/matrix.nix` holds the wiring; there is no `/var/lib/mautrix-wsproxy/config.yaml`.
 - The **lime iMessage bridge** cannot use the LAN wsproxy vhost under macOS
   Local Network Privacy (the unsigned bridge binary gets `EHOSTUNREACH`). A
   launchd SSH tunnel on lime (`ca.estrogenuinely.wsproxy-tunnel`) forwards
@@ -176,7 +176,7 @@ manually once. If the Synapse DB is ever rebuilt, re-mint the token.
 
 ## Monitoring
 
-The phone stays plugged into satsuma by USB. `satsuma/monitoring/sms-bridge.nix`
+The phone stays plugged into satsuma by USB. `hosts/satsuma/monitoring/sms-bridge.nix`
 runs `sms-bridge-monitor.timer` every minute as the `sms-monitor` user. It reads
 the phone over adb and writes `/var/lib/prometheus-node-exporter-text/sms_bridge.prom`,
 which node_exporter exposes:
@@ -189,7 +189,7 @@ which node_exporter exposes:
 | `sms_bridge_battery_temperature_celsius` | battery temperature |
 | `sms_bridge_last_run_timestamp_seconds` | collector last finished |
 
-Grafana alerts (in `satsuma/monitoring/monitoring.nix`): phone unreachable, bridge
+Grafana alerts (in `hosts/satsuma/monitoring/monitoring.nix`): phone unreachable, bridge
 process down, battery below 20 %, battery above 45 °C, collector stale.
 
 The collector has its own adb key (`/var/lib/sms-bridge-monitor/.android/adbkey`)

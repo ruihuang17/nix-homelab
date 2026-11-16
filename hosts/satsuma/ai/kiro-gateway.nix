@@ -226,7 +226,7 @@ in
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = pkgs.callPackage ../../pkgs/kiro-gateway { };
+      default = pkgs.callPackage ../../../pkgs/kiro-gateway { };
       description = "kiro-gateway package to run.";
     };
   };

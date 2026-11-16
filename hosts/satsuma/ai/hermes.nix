@@ -5,7 +5,7 @@
   ...
 }:
 let
-  homelab = import ../../homelab.nix;
+  homelab = import ../../../homelab.nix;
 in
 {
   imports = [ inputs.hermes-agent.nixosModules.default ];

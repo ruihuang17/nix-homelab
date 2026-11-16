@@ -25,7 +25,7 @@ let
   profileDir = "/home/rhuang/.thunderbird/homelab";
 
   userJs = pkgs.writeText "thunderbird-homelab-user.js" ''
-    // Managed by /etc/nixos/pomelo/thunderbird.nix. Do not edit in place.
+    // Managed by /etc/nixos/hosts/pomelo/thunderbird.nix. Do not edit in place.
 
 
     // -- account manager -----------------------------------------------------

@@ -5,7 +5,7 @@
   ...
 }:
 let
-  homelab = import ../../homelab.nix;
+  homelab = import ../../../homelab.nix;
 
   # Build the query+reduce+threshold data pipeline for a Grafana-managed alert
   # rule. `expr` is a PromQL instant query whose result is non-empty exactly
@@ -378,7 +378,7 @@ in
                   summary = "{{ $labels.instance }} {{ $labels.mountpoint }} has <10% free space.";
                   labels.severity = "warning";
                 })
-                # SMS bridge phone, from satsuma/monitoring/sms-bridge.nix.
+                # SMS bridge phone, from hosts/satsuma/monitoring/sms-bridge.nix.
                 (mkRule {
                   uid = "homelab-sms-phone-unreachable";
                   title = "SMS bridge phone unreachable";

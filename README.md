@@ -5,11 +5,11 @@ the packages/services that tie them together.
 
 | Host | Config | Platform | Address | Role |
 | --- | --- | --- | --- | --- |
-| `pomelo` | `pomelo/` | NixOS (unstable) | `10.0.10.40` | Desktop |
-| `tangerine` | `tangerine/` | nix-darwin (aarch64) | `10.0.10.41` | MacBook Pro laptop |
-| `lime` | `lime/` | nix-darwin (aarch64) | `10.0.10.73` | Mac mini: iMessage bridge, Jellyfin |
-| `satsuma` | `satsuma/` | NixOS (unstable) | `10.0.10.72` | Main server: storage, nginx, Kanidm, Nextcloud, Matrix, media, monitoring, AI |
-| `bergamot` (hostname `mail`) | `bergamot/` | NixOS (unstable) | `100.91.236.114` (Tailscale) | OVH VPS: Stalwart mail server, offsite backups |
+| `pomelo` | `hosts/pomelo/` | NixOS (unstable) | `10.0.10.40` | Desktop |
+| `tangerine` | `hosts/tangerine/` | nix-darwin (aarch64) | `10.0.10.41` | MacBook Pro laptop |
+| `lime` | `hosts/lime/` | nix-darwin (aarch64) | `10.0.10.73` | Mac mini: iMessage bridge, Jellyfin |
+| `satsuma` | `hosts/satsuma/` | NixOS (unstable) | `10.0.10.72` | Main server: storage, nginx, Kanidm, Nextcloud, Matrix, media, monitoring, AI |
+| `bergamot` (hostname `mail`) | `hosts/bergamot/` | NixOS (unstable) | `100.91.236.114` (Tailscale) | OVH VPS: Stalwart mail server, offsite backups |
 
 
 See [docs/Setup Overview.md](docs/Setup%20Overview.md) for hardware and the full
@@ -53,12 +53,13 @@ satsuma auto-upgrades daily at 04:00, commits `flake.lock` and pushes it to
 ├── common-nixos.nix       # every NixOS host
 ├── common-darwin.nix      # lime + tangerine
 ├── server.nix             # satsuma + bergamot only
-├── satsuma/               # one file per service, grouped by function
-│                          #   (system/ holds kernel, power, storage, upgrades)
-├── bergamot/              # nixosConfigurations.bergamot (hostname mail)
-├── pomelo/                # desktop (+ nfs.nix)
-├── lime/                  # nix-darwin: Mac mini
-├── tangerine/             # nix-darwin: laptop
+├── hosts/
+│   ├── satsuma/           # one file per service, grouped by function
+│   │                      #   (system/ holds kernel, power, storage, upgrades)
+│   ├── bergamot/          # nixosConfigurations.bergamot (hostname mail)
+│   ├── pomelo/            # desktop (+ nfs.nix)
+│   ├── lime/              # nix-darwin: Mac mini
+│   └── tangerine/         # nix-darwin: laptop
 ├── pkgs/                  # local derivations (matrix-mcp, mindroom-nio, kiro-gateway)
 ├── dots/                  # dotfiles linked into the hosts (via homelab.nix)
 ├── docs/                  # per-topic runbooks (Obsidian vault)
@@ -75,11 +76,11 @@ Encrypted with [agenix](https://github.com/ryantm/agenix). Each host has a
 `secrets/` directory of `.age` files next to its configuration:
 
 ```sh
-cd satsuma   # or vps/, lime/
+cd hosts/satsuma   # or hosts/bergamot/, hosts/lime/
 agenix -e secret.age -i /etc/ssh/ssh_host_ed25519_key
 ```
 
-Recipients are declared in `<host>/secrets/secrets.nix`. See
+Recipients are declared in `hosts/<host>/secrets/secrets.nix`. See
 [docs/Secrets.md](docs/Secrets.md) for the editing and rekeying workflow.
 
 ## Verifying a refactor

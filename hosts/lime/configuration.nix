@@ -12,13 +12,13 @@
   ...
 }:
 let
-  homelab = import ../homelab.nix;
+  homelab = import ../../homelab.nix;
 in
 {
   imports = [
     ./agents.nix
     ./homebrew.nix
-    ../common-darwin.nix
+    ../../common-darwin.nix
   ];
 
   networking.hostName = "lime";
@@ -34,7 +34,7 @@ in
 
   # mautrix-imessage's config.yaml carries the appservice as_token/hs_token.
   # agenix decrypts it into a RAM disk at boot; nothing plaintext is written
-  # under the home directory or /var/lib. See lime/agents.nix for the consumer.
+  # under the home directory or /var/lib. See hosts/lime/agents.nix for the consumer.
   age.secrets.imessage-config = {
     file = ./secrets/imessage-config.age;
     owner = "rhuang";
@@ -55,7 +55,7 @@ in
 
   environment.etc."auto_master".text = ''
     #
-    # Automounter master map - managed by nix-darwin (lime/configuration.nix).
+    # Automounter master map - managed by nix-darwin (hosts/lime/configuration.nix).
     #
     +auto_master
     /home   auto_home   -nobrowse,hidefromfinder

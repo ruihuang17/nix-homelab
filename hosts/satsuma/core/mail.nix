@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  homelab = import ../../homelab.nix;
+  homelab = import ../../../homelab.nix;
 in
 
 {

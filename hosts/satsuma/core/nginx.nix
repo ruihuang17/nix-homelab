@@ -1,6 +1,6 @@
 { pkgs, config, ... }:
 let
-  homelab = import ../../homelab.nix;
+  homelab = import ../../../homelab.nix;
 in
 {
   age.secrets.cloudflare_api.file = ../secrets/cloudflare_api.age;

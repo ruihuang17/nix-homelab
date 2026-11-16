@@ -2,7 +2,7 @@
 { ... }:
 {
   imports = [
-    ../common-darwin.nix
+    ../../common-darwin.nix
     ./packages.nix
   ];
 

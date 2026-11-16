@@ -4,7 +4,7 @@
 }:
 # ZFS/SMART/media/database telemetry for the Grove dashboard.
 let
-  homelab = import ../../homelab.nix;
+  homelab = import ../../../homelab.nix;
 in
 {
   services.groveExporter = {

@@ -2,8 +2,8 @@
 
 `rbw` is the command-line client for our Vaultwarden
 (`https://vaultwarden.estrogenuinely.ca`). It is installed on `pomelo`
-(`pomelo/modules/packages.nix`, with `pinentry-qt`) and `satsuma`
-(`satsuma/configuration.nix`, with `pinentry-curses`). It replaced the Bitwarden
+(`hosts/pomelo/modules/packages.nix`, with `pinentry-qt`) and `satsuma`
+(`hosts/satsuma/configuration.nix`, with `pinentry-curses`). It replaced the Bitwarden
 MCP and the `bw` CLI; see [OpenCode](OpenCode.md).
 
 ## Setup

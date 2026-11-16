@@ -5,7 +5,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../common-nixos.nix
+    ../../common-nixos.nix
     ./modules/boot.nix
     ./modules/nvidia.nix
     ./modules/users.nix
