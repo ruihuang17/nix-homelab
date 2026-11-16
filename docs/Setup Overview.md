@@ -90,7 +90,7 @@ Backups:
 ## lime
 
 - Apple M4, 16 GB RAM, 228 GB disk (15% used), macOS 27.2. Set to restart automatically after a power failure, and never sleeps.
-- Built by **nix-darwin** from the same flake (`darwinConfigurations.lime`, sources in `lime/`). Checkout at `~/nixos-homelab`; `sudo darwin-rebuild switch --flake ~/nixos-homelab#lime`. Details in [[lime (macOS)]].
+- Built by **nix-darwin** from the same flake (`darwinConfigurations.lime`, sources in `lime/`). Checkout at `~/nix-homelab`; `sudo darwin-rebuild switch --flake ~/nix-homelab#lime`. Details in [[lime (macOS)]].
 - User `rhuang`. The login shell is nix's fish (`/run/current-system/sw/bin/fish`), so `/run/current-system/sw/bin` is on `PATH`.
 - **mautrix-imessage** (`~/mautrix-imessage`): Matrix to iMessage bridge, run by the launchd user agent `fi.mau.mautrix-imessage` (config `platform: mac`). It connects to Synapse on satsuma and needs **Full Disk Access** for its binary to read `~/Library/Messages/chat.db`. Its appservice websocket reaches the satsuma wsproxy through the `ca.estrogenuinely.wsproxy-tunnel` loopback SSH tunnel (macOS Local Network Privacy blocks the bridge's own LAN socket). See [[SMS Matrix Bridge]] for the Pixel/SMS counterpart and [[lime (macOS)]] for the tunnel.
 - **Jellyfin** (Homebrew cask) runs the media server on port 8096; satsuma nginx proxies `jellyfin.local.estrogenuinely.ca` here. It needs network-volume access for the NFS mount.

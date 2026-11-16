@@ -1,6 +1,6 @@
 # Backups (satsuma)
 
-Config repo: `/etc/nixos` on satsuma → `github.com:ruihuang17/nixos-homelab` (branch `main`).
+Config repo: `/etc/nixos` on satsuma → `github.com:ruihuang17/nix-homelab` (branch `main`).
 
 | What                      | Method                                   | Where it lands                                | Schedule                     | Offsite |
 | ------------------------- | ---------------------------------------- | --------------------------------------------- | ---------------------------- | ------- |

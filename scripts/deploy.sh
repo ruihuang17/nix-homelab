@@ -86,7 +86,7 @@ deploy_darwin() {
 ==> $1 is nix-darwin, so it is deployed on the Mac:
 
     ssh $1
-    cd ~/nixos-homelab && git pull
+    cd ~/nix-homelab && git pull
     sudo darwin-rebuild switch --flake .#$1
 EOF
 }

@@ -33,8 +33,8 @@ Since 2026-10-31 lime is built from `darwinConfigurations.lime` in this flake
 first non-NixOS host here; the three NixOS configs are unaffected.
 
 ```sh
-cd ~/nixos-homelab && git pull
-sudo darwin-rebuild switch --flake ~/nixos-homelab#lime
+cd ~/nix-homelab && git pull
+sudo darwin-rebuild switch --flake ~/nix-homelab#lime
 ```
 
 - **Activation must run as root.** Newer nix-darwin removed the internal
