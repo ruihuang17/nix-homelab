@@ -60,6 +60,7 @@ in
     ".config/starship.toml" = ./dots/starship/starship.toml;
     ".config/kitty/kitty.conf" = ./dots/kitty/kitty.conf;
     ".config/kitty/catppuccin-mocha.conf" = ./dots/kitty/catppuccin-mocha.conf;
+    ".vimrc" = ./dots/vim/vimrc;
     ".ssh/config" = ./dots/ssh/config;
   };
 }
