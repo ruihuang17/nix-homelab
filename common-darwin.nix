@@ -80,6 +80,7 @@ in
     kitty.terminfo # so SSH from kitty (TERM=xterm-kitty) works
     starship
     git
+    gh
     vim
     tmux
     btop
