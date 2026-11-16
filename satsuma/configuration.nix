@@ -36,6 +36,7 @@
     ./monitoring/grove.nix
     "${inputs.grove}/monitoring/grove-exporter.nix"
 
+    ./system/ci-deploy.nix
     ./system/kernel.nix
     ./system/power.nix
     ./system/storage.nix

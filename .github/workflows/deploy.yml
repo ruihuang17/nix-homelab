@@ -1,0 +1,43 @@
+name: deploy
+
+# Deploys satsuma and bergamot over Tailscale. Never add a pull_request
+# trigger: this job holds credentials that can change production.
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "docs/**"
+      - "tofu/**"
+      - "README.md"
+  workflow_dispatch:
+
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Join the tailnet
+        uses: tailscale/github-action@v3
+        with:
+          oauth-client-id: ${{ secrets.TS_OAUTH_CLIENT_ID }}
+          oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
+          tags: tag:ci
+
+      - name: Deploy
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          SATSUMA_HOST_KEY: ${{ secrets.SATSUMA_HOST_KEY }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy
+          chmod 600 ~/.ssh/deploy
+          printf '%s\n' "$SATSUMA_HOST_KEY" > ~/.ssh/known_hosts
+          # The key is forced to run the deploy command; the argument is ignored.
+          ssh -i ~/.ssh/deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            root@100.72.25.50 deploy
