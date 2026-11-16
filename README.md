@@ -5,11 +5,11 @@ the packages/services that tie them together.
 
 | Host | Config | Platform | Address | Role |
 | --- | --- | --- | --- | --- |
-| `satsuma` | `satsuma/` | NixOS (unstable) | `10.0.10.72` | Main server: storage, nginx, Kanidm, Nextcloud, Matrix, media, monitoring, AI |
-| `bergamot` (hostname `mail`) | `bergamot/` | NixOS (unstable) | `100.91.236.114` (Tailscale) | OVH VPS: Stalwart mail server, offsite backups |
 | `pomelo` | `pomelo/` | NixOS (unstable) | `10.0.10.40` | Desktop |
 | `tangerine` | `tangerine/` | nix-darwin (aarch64) | `10.0.10.41` | MacBook Pro laptop |
 | `lime` | `lime/` | nix-darwin (aarch64) | `10.0.10.73` | Mac mini: iMessage bridge, Jellyfin |
+| `satsuma` | `satsuma/` | NixOS (unstable) | `10.0.10.72` | Main server: storage, nginx, Kanidm, Nextcloud, Matrix, media, monitoring, AI |
+| `bergamot` (hostname `mail`) | `bergamot/` | NixOS (unstable) | `100.91.236.114` (Tailscale) | OVH VPS: Stalwart mail server, offsite backups |
 
 
 See [docs/Setup Overview.md](docs/Setup%20Overview.md) for hardware and the full
