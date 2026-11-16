@@ -1,15 +1,27 @@
 name: deploy
 
-# Deploys satsuma and bergamot over Tailscale. Never add a pull_request
-# trigger: this job holds credentials that can change production.
+# Manually triggered deploy over Tailscale. Never add a pull_request or push
+# trigger without thinking: this job holds credentials that can change
+# production. tangerine is not here (its sudo needs a password).
 on:
-  push:
-    branches: [main]
-    paths-ignore:
-      - "docs/**"
-      - "tofu/**"
-      - "README.md"
   workflow_dispatch:
+    inputs:
+      satsuma:
+        description: Deploy satsuma
+        type: boolean
+        default: true
+      bergamot:
+        description: Deploy bergamot
+        type: boolean
+        default: true
+      pomelo:
+        description: Deploy pomelo (must be powered on)
+        type: boolean
+        default: false
+      lime:
+        description: Deploy lime (nix-darwin, built on the Mac)
+        type: boolean
+        default: false
 
 concurrency:
   group: deploy
@@ -33,11 +45,18 @@ jobs:
         env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
           SATSUMA_HOST_KEY: ${{ secrets.SATSUMA_HOST_KEY }}
+          HOSTS: >-
+            ${{ inputs.satsuma && 'satsuma' || '' }}
+            ${{ inputs.bergamot && 'bergamot' || '' }}
+            ${{ inputs.pomelo && 'pomelo' || '' }}
+            ${{ inputs.lime && 'lime' || '' }}
         run: |
           install -d -m 700 ~/.ssh
           printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy
           chmod 600 ~/.ssh/deploy
           printf '%s\n' "$SATSUMA_HOST_KEY" > ~/.ssh/known_hosts
-          # The key is forced to run the deploy command; the argument is ignored.
+          HOSTS=$(echo $HOSTS)
+          [ -n "$HOSTS" ] || { echo "no hosts selected" >&2; exit 1; }
+          # The key is forced to run ci-deploy; it takes the host list as its argument.
           ssh -i ~/.ssh/deploy -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
-            root@100.72.25.50 deploy
+            root@100.72.25.50 "$HOSTS"
