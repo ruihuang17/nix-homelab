@@ -23,6 +23,7 @@
       "firefox"
       "claude-code@latest"
       "vorssaint"
+      "thaw@beta"
     ];
 
     brews = [
