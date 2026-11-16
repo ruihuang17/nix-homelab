@@ -32,6 +32,9 @@ user_pref("mail.identity.id1.valid", true);
 user_pref("mail.identity.id1.fcc", true);
 user_pref("mail.identity.id1.fcc_folder", "imap://r232huan%40uwaterloo.ca@outlook.office365.com/Sent Items");
 user_pref("mail.identity.id1.draft_folder", "imap://r232huan%40uwaterloo.ca@outlook.office365.com/Drafts");
+user_pref("mail.identity.id1.archive_enabled", true);
+user_pref("mail.identity.id1.archives_folder_picker_mode", "1");
+user_pref("mail.identity.id1.archive_folder", "imap://r232huan%40uwaterloo.ca@outlook.office365.com/Archive");
 
 user_pref("mail.smtpserver.smtp1.type", "smtp");
 user_pref("mail.smtpserver.smtp1.hostname", "smtp.office365.com");
@@ -64,6 +67,9 @@ user_pref("mail.identity.id2.valid", true);
 user_pref("mail.identity.id2.fcc", true);
 user_pref("mail.identity.id2.fcc_folder", "imap://rhuang@mail.estrogenuinely.ca/Sent Items");
 user_pref("mail.identity.id2.draft_folder", "imap://rhuang@mail.estrogenuinely.ca/Drafts");
+user_pref("mail.identity.id2.archive_enabled", true);
+user_pref("mail.identity.id2.archives_folder_picker_mode", "1");
+user_pref("mail.identity.id2.archive_folder", "imap://rhuang@mail.estrogenuinely.ca/Archives");
 
 user_pref("mail.smtpserver.smtp2.type", "smtp");
 user_pref("mail.smtpserver.smtp2.hostname", "mail.estrogenuinely.ca");
@@ -99,6 +105,9 @@ user_pref("mail.identity.id4.valid", true);
 user_pref("mail.identity.id4.fcc", true);
 user_pref("mail.identity.id4.fcc_folder", "imap://rui.huang17%40hotmail.com@outlook.office365.com/Sent");
 user_pref("mail.identity.id4.draft_folder", "imap://rui.huang17%40hotmail.com@outlook.office365.com/Drafts");
+user_pref("mail.identity.id4.archive_enabled", true);
+user_pref("mail.identity.id4.archives_folder_picker_mode", "1");
+user_pref("mail.identity.id4.archive_folder", "imap://rui.huang17%40hotmail.com@outlook.office365.com/Archive");
 
 user_pref("mail.smtpserver.smtp4.type", "smtp");
 user_pref("mail.smtpserver.smtp4.hostname", "smtp-mail.outlook.com");
