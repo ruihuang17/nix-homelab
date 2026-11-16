@@ -63,4 +63,12 @@ in
     ".vimrc" = ./dots/vim/vimrc;
     ".ssh/config" = ./dots/ssh/config;
   };
+
+  # Thunderbird profile files, used only by hosts that import a thunderbird.nix
+  # (pomelo, tangerine). Not in `dotfiles`: the profile directory differs per
+  # OS, and profiles.ini must be a writable copy rather than a link.
+  thunderbird = {
+    userJs = ./dots/thunderbird/user.js;
+    profilesIni = ./dots/thunderbird/profiles.ini;
+  };
 }

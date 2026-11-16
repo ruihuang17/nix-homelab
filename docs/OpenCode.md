@@ -621,8 +621,8 @@ sudo oc-rebuild
 
 ### Thunderbird on pomelo
 
-`hosts/pomelo/thunderbird.nix` creates a Nix-managed Thunderbird profile at
-`~/.thunderbird/homelab`, seeds it with `user.js` for both accounts, and adds a
+`hosts/pomelo/modules/thunderbird.nix` creates a Nix-managed Thunderbird profile at
+`~/.thunderbird/homelab`, links `dots/thunderbird/user.js` into it, and adds a
 `thunderbird-homelab` launcher. It is a separate profile, so the existing
 manual profile (and its Proton/CSClub accounts) is untouched. The first launch
 asks for the Stalwart password and opens the Microsoft login for UWaterloo;

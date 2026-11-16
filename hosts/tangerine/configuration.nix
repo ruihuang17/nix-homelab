@@ -4,6 +4,7 @@
   imports = [
     ../../common-darwin.nix
     ./packages.nix
+    ./thunderbird.nix
   ];
 
   networking.hostName = "tangerine";

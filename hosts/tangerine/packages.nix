@@ -24,6 +24,7 @@
       "claude-code@latest"
       "vorssaint"
       "thaw@beta"
+      "thunderbird"
     ];
 
     brews = [
