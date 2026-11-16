@@ -2,8 +2,9 @@
 // Edit dots/thunderbird/user.js in the repo, not the copy in the profile.
 
 // -- account manager -----------------------------------------------------
-user_pref("mail.accountmanager.accounts", "account4,account1,account2");
+user_pref("mail.accountmanager.accounts", "account4,account1,account2,account8");
 user_pref("mail.accountmanager.defaultaccount", "account4");
+user_pref("mail.accountmanager.localfoldersserver", "server8");
 user_pref("mail.smtp.defaultserver", "smtp4");
 user_pref("mail.smtpservers", "smtp4,smtp1,smtp2");
 
@@ -105,3 +106,15 @@ user_pref("mail.smtpserver.smtp4.port", 587);
 user_pref("mail.smtpserver.smtp4.try_ssl", 2); // STARTTLS
 user_pref("mail.smtpserver.smtp4.authMethod", 10); // OAuth2
 user_pref("mail.smtpserver.smtp4.username", "rui.huang17@hotmail.com");
+
+// -- account 8: Local Folders --------------------------------------------
+// Declared here so Thunderbird never picks a number that an account above
+// later takes over (the original Local Folders was server3, which the old
+// Proton account overwrote). 5-7 are skipped: pomelo's prefs.js used them.
+user_pref("mail.account.account8.server", "server8");
+
+user_pref("mail.server.server8.type", "none");
+user_pref("mail.server.server8.hostname", "Local Folders");
+user_pref("mail.server.server8.name", "Local Folders");
+user_pref("mail.server.server8.userName", "nobody");
+user_pref("mail.server.server8.directory-rel", "[ProfD]Mail/Local Folders");
