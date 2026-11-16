@@ -84,7 +84,11 @@ in
       MemoryMax = "8G";
       NoNewPrivileges = true;
       ProtectSystem = "strict";
-      ProtectHome = true;
+      # "yes" makes /home inaccessible, which turns the engine's harmless
+      # probe of its baked-in CI build path (/home/runner/work/.../engine/.git)
+      # into EACCES and aborts nonplanar slices. "tmpfs" keeps /home hidden
+      # (empty mount) while statting returns the handled ENOENT.
+      ProtectHome = "tmpfs";
       PrivateTmp = true;
       PrivateDevices = true;
       RestrictAddressFamilies = [ "AF_UNIX" "AF_INET" "AF_INET6" ];

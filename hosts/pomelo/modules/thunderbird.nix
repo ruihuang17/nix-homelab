@@ -10,12 +10,13 @@
 # Accounts:
 #   - rui.huang17@hotmail.com (Outlook.com, OAuth2 through Thunderbird; default)
 #   - r232huan@uwaterloo.ca  (Microsoft 365, OAuth2 through Thunderbird)
+#   - r232huan@csclub.uwaterloo.ca (CSC, normal password, WatIAM username)
 #   - rui@estrogenuinely.ca  (Stalwart, normal password, kanidm name `rhuang`)
-# All three mirror the accounts the agent uses over IMAP.
+# All but CSC mirror the accounts the agent uses over IMAP.
 #
 # Credentials are deliberately NOT in Nix. On first launch Thunderbird prompts
-# for the Stalwart password and opens the Microsoft login for the UWaterloo
-# and Outlook.com accounts; all are stored in the profile afterwards.
+# for the CSC and Stalwart passwords and opens the Microsoft login for the
+# UWaterloo and Outlook.com accounts; all are stored in the profile afterwards.
 # Thunderbird cannot read a password from a file, so an age secret cannot feed it.
 let
   homelab = import ../../../homelab.nix;

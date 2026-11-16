@@ -2,11 +2,11 @@
 // Edit dots/thunderbird/user.js in the repo, not the copy in the profile.
 
 // -- account manager -----------------------------------------------------
-user_pref("mail.accountmanager.accounts", "account4,account1,account2,account8");
+user_pref("mail.accountmanager.accounts", "account4,account1,account9,account2,account8");
 user_pref("mail.accountmanager.defaultaccount", "account4");
 user_pref("mail.accountmanager.localfoldersserver", "server8");
 user_pref("mail.smtp.defaultserver", "smtp4");
-user_pref("mail.smtpservers", "smtp4,smtp1,smtp2");
+user_pref("mail.smtpservers", "smtp4,smtp1,smtp9,smtp2");
 
 // -- account 1: UWaterloo (Microsoft 365, OAuth2) ------------------------
 user_pref("mail.account.account1.server", "server1");
@@ -42,6 +42,36 @@ user_pref("mail.smtpserver.smtp1.port", 587);
 user_pref("mail.smtpserver.smtp1.try_ssl", 2); // STARTTLS
 user_pref("mail.smtpserver.smtp1.authMethod", 10); // OAuth2
 user_pref("mail.smtpserver.smtp1.username", "r232huan@uwaterloo.ca");
+
+// -- account 9: CSC (Dovecot/Postfix, WatIAM username and CSC password) ----
+// Settings from https://wiki.csclub.uwaterloo.ca/Mail. Numbered 9 because 3
+// and 5-8 are taken or were used in pomelo's prefs.js. Folder prefs are left
+// at Thunderbird's defaults (Sent, Drafts, Archives on the server).
+user_pref("mail.account.account9.server", "server9");
+user_pref("mail.account.account9.identities", "id9");
+
+user_pref("mail.server.server9.type", "imap");
+user_pref("mail.server.server9.hostname", "mail.csclub.uwaterloo.ca");
+user_pref("mail.server.server9.name", "r232huan@csclub.uwaterloo.ca");
+user_pref("mail.server.server9.userName", "r232huan");
+user_pref("mail.server.server9.port", 993);
+user_pref("mail.server.server9.socketType", 3); // TLS
+user_pref("mail.server.server9.authMethod", 3); // normal password
+user_pref("mail.server.server9.login_at_startup", true);
+user_pref("mail.server.server9.check_new_mail", true);
+
+user_pref("mail.identity.id9.useremail", "r232huan@csclub.uwaterloo.ca");
+user_pref("mail.identity.id9.fullName", "Rui Huang");
+user_pref("mail.identity.id9.smtpServer", "smtp9");
+user_pref("mail.identity.id9.valid", true);
+user_pref("mail.identity.id9.fcc", true);
+
+user_pref("mail.smtpserver.smtp9.type", "smtp");
+user_pref("mail.smtpserver.smtp9.hostname", "mail.csclub.uwaterloo.ca");
+user_pref("mail.smtpserver.smtp9.port", 465);
+user_pref("mail.smtpserver.smtp9.try_ssl", 3); // implicit TLS
+user_pref("mail.smtpserver.smtp9.authMethod", 3); // normal password
+user_pref("mail.smtpserver.smtp9.username", "r232huan");
 
 // -- account 2: Stalwart (kanidm password, username `rhuang`) -------------
 user_pref("mail.account.account2.server", "server2");
