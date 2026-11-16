@@ -61,11 +61,12 @@ in
         globalRedirect = "ruihuang.io";
       };
 
-      # Apex vhost: only serves Matrix delegation, since server_name is
+      # Apex vhost: static page plus Matrix delegation, since server_name is
       # estrogenuinely.ca but Synapse lives at matrix.estrogenuinely.ca.
       "estrogenuinely.ca" = {
         useACMEHost = "estrogenuinely.ca";
         forceSSL = true;
+        root = "/var/lib/www/estrogenuinely";
         locations."= /.well-known/matrix/server" = {
           extraConfig = ''
             default_type application/json;
