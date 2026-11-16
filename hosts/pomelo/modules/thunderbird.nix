@@ -10,12 +10,12 @@
 # Accounts:
 #   - r232huan@uwaterloo.ca  (Microsoft 365, OAuth2 through Thunderbird)
 #   - rui@estrogenuinely.ca  (Stalwart, normal password, kanidm name `rhuang`)
-#   - rui.huang17@pm.me      (Proton Bridge on 127.0.0.1, STARTTLS)
-# The first two mirror the ones the agent uses over IMAP.
+#   - rui.huang17@hotmail.com (Outlook.com, OAuth2 through Thunderbird)
+# All three mirror the accounts the agent uses over IMAP.
 #
 # Credentials are deliberately NOT in Nix. On first launch Thunderbird prompts
-# for the Stalwart and Proton Bridge passwords and opens the Microsoft login
-# for the UWaterloo account; all are stored in the profile afterwards.
+# for the Stalwart password and opens the Microsoft login for the UWaterloo
+# and Outlook.com accounts; all are stored in the profile afterwards.
 # Thunderbird cannot read a password from a file, so an age secret cannot feed it.
 let
   homelab = import ../../../homelab.nix;
