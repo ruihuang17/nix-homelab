@@ -8,9 +8,9 @@
 # same files (hosts/tangerine/thunderbird.nix).
 #
 # Accounts:
+#   - rui.huang17@hotmail.com (Outlook.com, OAuth2 through Thunderbird; default)
 #   - r232huan@uwaterloo.ca  (Microsoft 365, OAuth2 through Thunderbird)
 #   - rui@estrogenuinely.ca  (Stalwart, normal password, kanidm name `rhuang`)
-#   - rui.huang17@hotmail.com (Outlook.com, OAuth2 through Thunderbird)
 # All three mirror the accounts the agent uses over IMAP.
 #
 # Credentials are deliberately NOT in Nix. On first launch Thunderbird prompts

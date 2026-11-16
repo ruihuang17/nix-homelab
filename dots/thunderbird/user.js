@@ -2,10 +2,10 @@
 // Edit dots/thunderbird/user.js in the repo, not the copy in the profile.
 
 // -- account manager -----------------------------------------------------
-user_pref("mail.accountmanager.accounts", "account1,account2,account4");
-user_pref("mail.accountmanager.defaultaccount", "account1");
-user_pref("mail.smtp.defaultserver", "smtp1");
-user_pref("mail.smtpservers", "smtp1,smtp2,smtp4");
+user_pref("mail.accountmanager.accounts", "account4,account1,account2");
+user_pref("mail.accountmanager.defaultaccount", "account4");
+user_pref("mail.smtp.defaultserver", "smtp4");
+user_pref("mail.smtpservers", "smtp4,smtp1,smtp2");
 
 // -- account 1: UWaterloo (Microsoft 365, OAuth2) ------------------------
 user_pref("mail.account.account1.server", "server1");
