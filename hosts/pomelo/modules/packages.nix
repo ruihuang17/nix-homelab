@@ -20,7 +20,6 @@
 
     # Communication
     thunderbird
-    protonmail-bridge-gui
     element-desktop
     vesktop
     wechat
