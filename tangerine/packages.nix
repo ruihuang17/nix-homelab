@@ -22,6 +22,7 @@
     casks = [
       "firefox"
       "claude-code@latest"
+      "vorssaint"
     ];
 
     brews = [
