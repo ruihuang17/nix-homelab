@@ -18,40 +18,31 @@ the LAN.
 
 ## Applying changes
 
-`scripts/deploy.sh` runs `nixos-rebuild` for one or more NixOS hosts from this
-checkout. Remote hosts are reached through the ssh aliases the flake installs
-(`root@bergamot`, `rhuang@pomelo` with sudo); the host you are on is switched
-locally.
+**From GitHub:** Actions → deploy → Run workflow, then tick the hosts (satsuma,
+bergamot, pomelo, lime). It runs over Tailscale and nothing deploys on push. See
+[docs/CI Deploy.md](docs/CI%20Deploy.md) for setup and limits.
+
+**By hand:** `scripts/deploy.sh` runs `nixos-rebuild` for NixOS hosts from this
+checkout, and CI uses it too. Remote hosts are reached through the ssh aliases
+the flake installs; the host you are on is switched locally.
 
 ```sh
-scripts/deploy.sh                # satsuma, bergamot, pomelo
+scripts/deploy.sh                  # satsuma, bergamot, pomelo
 scripts/deploy.sh bergamot pomelo  # a selection
-scripts/deploy.sh -b all         # build only, no activation
-scripts/deploy.sh -n all         # print the commands without running them
-scripts/deploy.sh -k all         # keep going if one host fails
+scripts/deploy.sh -b all           # build only, no activation
+scripts/deploy.sh -n all           # print the commands without running them
+scripts/deploy.sh -k all           # keep going if one host fails
 ```
 
-`lime` and `tangerine` are nix-darwin and cannot be deployed from Linux;
-`scripts/deploy.sh lime` (or `tangerine`) prints the command to run on the Mac. The manual equivalents:
+`lime` and `tangerine` are nix-darwin and are rebuilt on the Mac itself
+(`scripts/deploy.sh lime` just prints the steps):
 
 ```sh
-# satsuma (also the canonical checkout at /etc/nixos)
-sudo nixos-rebuild switch --flake /etc/nixos#satsuma
-
-# bergamot, from satsuma
-sudo nixos-rebuild switch --flake /etc/nixos#bergamot --target-host root@bergamot
-
-# pomelo
-sudo nixos-rebuild switch --flake /etc/nixos#pomelo
-
-# lime / tangerine (on the Mac)
-sudo darwin-rebuild switch --flake ~/nixos-homelab#lime
-sudo darwin-rebuild switch --flake ~/nixos-homelab#tangerine
+sudo darwin-rebuild switch --flake ~/nix-homelab#lime        # or #tangerine
 ```
 
-To verify without switching, add `build` instead of `switch`. satsuma
-auto-upgrades daily at 04:00, commits `flake.lock` and pushes it to `main`; if
-you are holding a change back, stop `nixos-upgrade.timer` first.
+satsuma auto-upgrades daily at 04:00, commits `flake.lock` and pushes it to
+`main`; if you are holding a change back, stop `nixos-upgrade.timer` first.
 
 ## Layout
 
