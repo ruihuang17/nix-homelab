@@ -16,4 +16,10 @@
   # Touch ID for sudo. nix-darwin writes /etc/pam.d/sudo_local, which survives
   # macOS updates; the hand-written copy is kept as sudo_local.before-nix-darwin.
   security.pam.services.sudo_local.touchIdAuth = true;
+
+  # Lets scripts/deploy over ssh run the switch without a password prompt. Only
+  # darwin-rebuild switch is covered; sudo for everything else still asks.
+  security.sudo.extraConfig = ''
+    rhuang ALL=(root) NOPASSWD: /run/current-system/sw/bin/darwin-rebuild switch *
+  '';
 }
