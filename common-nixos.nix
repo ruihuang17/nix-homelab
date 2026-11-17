@@ -71,7 +71,7 @@ in
     gh
     ethtool
     dig
-    sourceHighlight
+    source-highlight
     btop
     smartmontools
     tree
