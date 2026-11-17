@@ -396,13 +396,14 @@ in
               {action: "set", field: "emails",          value: [.address]},
               {action: "set", field: "externalMembers", value: .members}
             ]' <<<"$want")
-            api -X PATCH -d "$patch" "$base/$name" | jq -e '.data' >/dev/null
+            # Success is {"data": null} for PATCH, so test for the key, not its value.
+            api -X PATCH -d "$patch" "$base/$name" | jq -e 'has("data")' >/dev/null
           else
             create=$(jq -c --arg n "$name" '{
               type: "list", name: $n, description: .description,
               emails: [.address], externalMembers: .members
             }' <<<"$want")
-            api -X POST -d "$create" "$base" | jq -e '.data' >/dev/null
+            api -X POST -d "$create" "$base" | jq -e 'has("data")' >/dev/null
           fi
           echo "synced list $name"
         done
