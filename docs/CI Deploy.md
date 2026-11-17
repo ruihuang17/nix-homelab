@@ -2,20 +2,19 @@
 
 `.github/workflows/deploy.yml` is a manually triggered workflow (Actions tab →
 deploy → Run workflow). Tick the hosts to deploy: satsuma and bergamot are on by
-default, pomelo and lime are opt-in. Nothing deploys on push.
+default, pomelo, lime and tangerine are opt-in. Nothing deploys on push.
 
 Flow: the runner joins the tailnet as `tag:ci` and SSHes to satsuma
 (`100.72.25.50`) with a key that is forced to run one script
 (`hosts/satsuma/system/ci-deploy.nix`). The script reads the host list the runner
-sends, rejects anything outside `satsuma bergamot pomelo lime`, runs
-`git pull --ff-only` in `/etc/nixos`, then `scripts/deploy.sh -k` for the NixOS
-hosts. For lime it SSHes from satsuma to the Mac, pulls `~/nix-homelab` and runs
-`sudo -n darwin-rebuild switch --flake .#lime`. satsuma builds the NixOS hosts;
-the runner does no Nix work. The job fails if any selected host fails.
+sends, rejects anything outside `satsuma bergamot pomelo lime tangerine`, runs
+`git pull --ff-only` in `/etc/nixos`, then `scripts/deploy.sh` with those hosts.
+That pushes the checkout to each host, and each one builds and switches itself
+in parallel; the runner does no Nix work. The job fails if any selected host
+fails.
 
-Not covered: tangerine (its sudo needs a password, and a laptop is often asleep).
-Run `sudo darwin-rebuild switch --flake ~/nix-homelab#tangerine` on it. pomelo is
-skipped by the desktop being off; the job will report it failed.
+pomelo and tangerine fail if the desktop is off or the laptop is asleep. The
+other hosts still deploy.
 
 ## Setup (one time)
 

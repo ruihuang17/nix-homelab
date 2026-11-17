@@ -2,7 +2,7 @@ name: deploy
 
 # Manually triggered deploy over Tailscale. Never add a pull_request or push
 # trigger without thinking: this job holds credentials that can change
-# production. tangerine is not here (its sudo needs a password).
+# production.
 on:
   workflow_dispatch:
     inputs:
@@ -19,7 +19,11 @@ on:
         type: boolean
         default: false
       lime:
-        description: Deploy lime (nix-darwin, built on the Mac)
+        description: Deploy lime (nix-darwin)
+        type: boolean
+        default: false
+      tangerine:
+        description: Deploy tangerine (laptop, must be awake)
         type: boolean
         default: false
 
@@ -50,6 +54,7 @@ jobs:
             ${{ inputs.bergamot && 'bergamot' || '' }}
             ${{ inputs.pomelo && 'pomelo' || '' }}
             ${{ inputs.lime && 'lime' || '' }}
+            ${{ inputs.tangerine && 'tangerine' || '' }}
         run: |
           install -d -m 700 ~/.ssh
           printf '%s\n' "$DEPLOY_KEY" > ~/.ssh/deploy

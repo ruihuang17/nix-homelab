@@ -32,6 +32,8 @@ Since 2026-10-31 lime is built from `darwinConfigurations.lime` in this flake
 (`hosts/lime/configuration.nix`, `hosts/lime/agents.nix`, `hosts/lime/homebrew.nix`). It is the
 first non-NixOS host here; the three NixOS configs are unaffected.
 
+Deploy it from any host with `scripts/deploy.sh lime`, or on the Mac itself:
+
 ```sh
 cd ~/nix-homelab && git pull
 sudo darwin-rebuild switch --flake ~/nix-homelab#lime

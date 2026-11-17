@@ -22,24 +22,22 @@ the LAN.
 bergamot, pomelo, lime). It runs over Tailscale and nothing deploys on push. See
 [docs/CI Deploy.md](docs/CI%20Deploy.md) for setup and limits.
 
-**By hand:** `scripts/deploy.sh` runs `nixos-rebuild` for NixOS hosts from this
-checkout, and CI uses it too. Remote hosts are reached through the ssh aliases
-the flake installs; the host you are on is switched locally.
+**By hand:** `scripts/deploy.sh` copies this checkout (tracked files, including
+uncommitted edits) into each host's Nix store over ssh. Each host then builds
+and switches itself with `nixos-rebuild` or `darwin-rebuild`. Hosts run in
+parallel, each output line is prefixed with the host name, and the full logs
+are saved to a temporary directory. CI uses the same script.
 
 ```sh
-scripts/deploy.sh                  # satsuma, bergamot, pomelo
-scripts/deploy.sh bergamot pomelo  # a selection
-scripts/deploy.sh -b all           # build only, no activation
-scripts/deploy.sh -n all           # print the commands without running them
-scripts/deploy.sh -k all           # keep going if one host fails
+scripts/deploy.sh                      # all five hosts
+scripts/deploy.sh bergamot lime        # a selection
+scripts/deploy.sh -b all               # build only, no activation
+scripts/deploy.sh -s satsuma           # one at a time, with Nix's progress bar
+scripts/deploy.sh -B satsuma bergamot  # build on satsuma, push to bergamot
+scripts/deploy.sh -n all               # print the commands without running them
 ```
 
-`lime` and `tangerine` are nix-darwin and are rebuilt on the Mac itself
-(`scripts/deploy.sh lime` just prints the steps):
-
-```sh
-sudo darwin-rebuild switch --flake ~/nix-homelab#lime        # or #tangerine
-```
+The Macs can also be rebuilt locally: `sudo darwin-rebuild switch --flake ~/nix-homelab#lime`.
 
 satsuma auto-upgrades daily at 04:00, commits `flake.lock` and pushes it to
 `main`; if you are holding a change back, stop `nixos-upgrade.timer` first.

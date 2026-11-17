@@ -40,9 +40,9 @@ in
     "nix-command"
     "flakes"
   ];
-  # Deploys push store paths built on another host (scripts/deploy.sh), and no
-  # host has a binary-cache signing key, so the receiving daemon must not apply
-  # the signature check to a local push. `wheel` already has passwordless sudo
+  # Deploys push the flake source, and with `--build-on` whole systems, from
+  # another host (scripts/deploy.sh). No host has a binary-cache signing key,
+  # so the receiving daemon must not apply the signature check to a local push. `wheel` already has passwordless sudo
   # on every host, so this grants the daemon no power those users lack. Cache
   # substitution still requires signatures (`require-sigs` stays on). `root` is
   # already a trusted user by default.

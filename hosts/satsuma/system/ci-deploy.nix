@@ -13,12 +13,10 @@ let
     export GIT_SSH_COMMAND="${pkgs.openssh}/bin/ssh -i /root/.ssh/general -o IdentitiesOnly=yes"
 
     hosts="''${SSH_ORIGINAL_COMMAND:-satsuma bergamot}"
-    nixos=()
-    lime=0
+    targets=()
     for h in $hosts; do
       case $h in
-        satsuma | bergamot | pomelo) nixos+=("$h") ;;
-        lime) lime=1 ;;
+        satsuma | bergamot | pomelo | lime | tangerine) targets+=("$h") ;;
         *) echo "ci-deploy: unknown host: $h" >&2; exit 2 ;;
       esac
     done
@@ -26,15 +24,8 @@ let
     cd /etc/nixos
     git pull --ff-only origin main
 
-    rc=0
-    if ((''${#nixos[@]})); then
-      scripts/deploy.sh -k "''${nixos[@]}" || rc=1
-    fi
-    if ((lime)); then
-      # nix-darwin: built on the Mac itself; rhuang has passwordless sudo there.
-      ssh -o BatchMode=yes lime 'cd ~/nix-homelab && git pull --ff-only && sudo -n darwin-rebuild switch --flake .#lime' || rc=1
-    fi
-    exit $rc
+    # Pushes this checkout to each host, which builds and switches itself.
+    exec scripts/deploy.sh "''${targets[@]}"
   '';
 in
 {
