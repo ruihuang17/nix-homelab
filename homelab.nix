@@ -61,6 +61,14 @@ in
     ".config/kitty/kitty.conf" = ./dots/kitty/kitty.conf;
     ".config/kitty/catppuccin-mocha.conf" = ./dots/kitty/catppuccin-mocha.conf;
     ".vimrc" = ./dots/vim/vimrc;
+    # LazyVim, linked file by file: ~/.config/nvim stays a real directory
+    # because lazy.nvim writes lazy-lock.json and lazyvim.json into it.
+    ".config/nvim/init.lua" = ./dots/nvim/init.lua;
+    ".config/nvim/lua/config/autocmds.lua" = ./dots/nvim/lua/config/autocmds.lua;
+    ".config/nvim/lua/config/keymaps.lua" = ./dots/nvim/lua/config/keymaps.lua;
+    ".config/nvim/lua/config/lazy.lua" = ./dots/nvim/lua/config/lazy.lua;
+    ".config/nvim/lua/config/options.lua" = ./dots/nvim/lua/config/options.lua;
+    ".config/nvim/lua/plugins/core.lua" = ./dots/nvim/lua/plugins/core.lua;
     ".ssh/config" = ./dots/ssh/config;
   };
 

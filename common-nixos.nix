@@ -66,6 +66,12 @@ in
     kitty.terminfo # so SSH from kitty (TERM=xterm-kitty) works
     kiro-cli
     vim
+    neovim
+    lazygit # LazyVim's <leader>gg
+    tree-sitter # LazyVim builds treesitter parsers with the CLI
+    gcc # ...and compiles them
+    ripgrep
+    fd
     git
     nixfmt
     gh

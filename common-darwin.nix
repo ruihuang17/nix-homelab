@@ -82,6 +82,9 @@ in
     git
     gh
     vim
+    neovim
+    lazygit # LazyVim's <leader>gg
+    tree-sitter # LazyVim builds treesitter parsers with the CLI
     tmux
     btop
     tree
