@@ -3,6 +3,20 @@ Host github.com
     HostName github.com
     User git
 
+# CSC
+Host neotame
+    HostName neotame.csclub.uwaterloo.ca
+    User r232huan
+
+Host hfcs
+    HostName hfcs.csclub.uwaterloo.ca
+    User r232huan
+
+# UWCS
+Host uwcs
+    HostName linux.student.cs.uwaterloo.ca
+    User r232huan
+
 # DNS Server
 Host orange
     HostName 10.0.10.23
