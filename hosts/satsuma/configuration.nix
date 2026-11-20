@@ -19,8 +19,10 @@
     ./apps/vaultwarden.nix
     ./apps/nextcloud
 
+    ./media/qbittorrent.nix
     ./media/immich.nix
-    ./media/arr-stack
+    ./media/arr-stack.nix
+    ./media/jellyfin.nix
 
     ./matrix/matrix.nix
 

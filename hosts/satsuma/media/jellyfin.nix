@@ -26,7 +26,7 @@
     };
   };
   environment.systemPackages = with pkgs; [ jellyfin-ffmpeg ];
-  # Keep the account/UID so /var/lib/jellyfin remains readable if re-enabled.
+  # Keep uhe account/UID so /var/lib/jellyfin remains readable if re-enabled.
   users.users.jellyfin = {
     isSystemUser = true;
     group = "media";
