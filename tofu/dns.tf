@@ -25,6 +25,7 @@ locals {
     "estrogenuinely.ca/home/CNAME"                = { content = "estrogenuinely.ca" }
     "estrogenuinely.ca/idm/CNAME"                 = { content = "estrogenuinely.ca" }
     "estrogenuinely.ca/matrix/CNAME"              = { content = "estrogenuinely.ca" }
+    "estrogenuinely.ca/mirror/CNAME"              = { content = "estrogenuinely.ca" }
     "estrogenuinely.ca/nextcloud/CNAME"           = { content = "estrogenuinely.ca" }
     "estrogenuinely.ca/vaultwarden/CNAME"         = { content = "estrogenuinely.ca" }
     "estrogenuinely.ca/pancakeslicer.local/CNAME" = { content = "estrogenuinely.ca" }
