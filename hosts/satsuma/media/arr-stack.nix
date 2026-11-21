@@ -1,6 +1,6 @@
 { config, pkgs, ... }:
 let
-  homelab = import ../../../../homelab.nix;
+  homelab = import ../../../homelab.nix;
 in
 {
   # Same GID as the `storage` group on pomelo and lime, so NFS access works.
