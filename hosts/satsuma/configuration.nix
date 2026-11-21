@@ -16,7 +16,6 @@
 
     ./apps/paperless.nix
     ./apps/pancakeslicer.nix
-    ./apps/curseforge-mirror.nix
     ./apps/vaultwarden.nix
     ./apps/nextcloud
 

@@ -246,43 +246,6 @@ in
           };
         };
 
-        # Public mirror of the CurseForge AppImage that curseforge-mirror.service
-        # fetches nightly (content-addressed blobs). Blobs are anonymous too:
-        # it is the same installer Overwolf serves to anyone, so nothing here
-        # is worth gating. The rate limit still protects the home uplink.
-        "mirror.estrogenuinely.ca" = {
-          useACMEHost = "estrogenuinely.ca";
-          forceSSL = true;
-          # Only the JSON records are anonymous: they contain hashes and
-          # timestamps, no copyrighted content, and let monitoring check
-          # freshness without holding the credential.
-          locations."= /latest.json" = {
-            alias = "/var/lib/curseforge-mirror/latest.json";
-            extraConfig = ''
-              add_header Cache-Control "no-cache";
-            '';
-          };
-          locations."= /history.jsonl" = {
-            alias = "/var/lib/curseforge-mirror/history.jsonl";
-            extraConfig = ''
-              add_header Cache-Control "no-cache";
-            '';
-          };
-          locations."/blobs/" = {
-            alias = "/var/lib/curseforge-mirror/blobs/";
-            extraConfig = ''
-              # The blob is ~150 MB over a home uplink; keep one abusive
-              # client from starving everything else. Full-speed for the
-              # first 100 MB (nix fetches are small), then capped.
-              limit_rate_after 100m;
-              limit_rate 20m;
-            '';
-          };
-          locations."/" = {
-            return = "404";
-          };
-        };
-
         "mautrix-wsproxy.local.estrogenuinely.ca" = {
           useACMEHost = "estrogenuinely.ca";
           forceSSL = true;
