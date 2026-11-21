@@ -420,6 +420,36 @@ in
                   summary = "The sms-bridge-monitor collector has not run in 10 minutes. Check journalctl -u sms-bridge-monitor.";
                   labels.severity = "warning";
                 })
+                # UniFi network gear, from the unpoller exporter in grove.nix.
+                # The controller reports uptime 0 for a device it has lost
+                # (USW Aggregation, 2026-11-20). label_replace puts the device
+                # name in `instance` so grouping and the Matrix/email subject
+                # name the device instead of the exporter address.
+                (mkRule {
+                  uid = "homelab-unifi-device-offline";
+                  title = "UniFi device offline";
+                  expr = ''label_replace(unpoller_device_uptime_seconds, "instance", "$1", "name", "(.*)") == bool 0'';
+                  forDur = "5m";
+                  summary = "UniFi {{ $labels.type }} {{ $labels.name }} is disconnected from the controller. Hosts behind it are probably unreachable too.";
+                  labels.severity = "critical";
+                })
+                (mkRule {
+                  uid = "homelab-unifi-exporter-down";
+                  title = "UniFi exporter or controller unreachable";
+                  # Without this the device rule would go quiet (no data = OK).
+                  expr = ''(up{job="grove-unifi"} == bool 0) or (unpoller_controller_up == bool 0)'';
+                  forDur = "10m";
+                  summary = "unpoller cannot scrape the UniFi controller at ${homelab.lanGateway}, so UniFi device alerts are blind.";
+                  labels.severity = "warning";
+                })
+                (mkRule {
+                  uid = "homelab-unifi-wan-failover";
+                  title = "Primary WAN not active";
+                  expr = ''max by (wan_interface) (unpoller_wan_interface_state{wan_networkgroup="WAN"}) == bool 0'';
+                  forDur = "5m";
+                  summary = "{{ $labels.wan_interface }} is not the active WAN; the gateway has failed over or lost its uplink.";
+                  labels.severity = "critical";
+                })
                 (mkRule {
                   uid = "homelab-restic-offsite-failed";
                   title = "Offsite backup failed";

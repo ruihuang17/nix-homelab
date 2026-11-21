@@ -259,6 +259,17 @@ posted to by the bot `@homelab-alertbot:estrogenuinely.ca`. rhuang is invited.
     - **SMS bridge phone** — unreachable over adb, bridge process down,
       battery <20 % or >45 °C, collector stale. Metrics come from the
       adb collector on satsuma; see [[SMS Matrix Bridge]] → *Monitoring*.
+    - **UniFi device offline** — `unpoller_device_uptime_seconds == 0` for any
+      switch, AP or gateway (5 m). The controller reports uptime 0 for a device
+      it has lost. The device name is copied into `instance`, so the alert names
+      the device. Added after the 2026-11-20 USW Aggregation outage, which only
+      showed up as lime being down.
+    - **UniFi exporter or controller unreachable** — the `grove-unifi` scrape or
+      `unpoller_controller_up` is 0 (10 m). Without it the device rule goes
+      silent when unpoller breaks.
+    - **Primary WAN not active** — `unpoller_wan_interface_state` for the `WAN`
+      group is 0 (5 m), i.e. the gateway failed over to Internet 2 or lost the
+      uplink.
     - **Offsite backup failed** — a `restic-backups-ovh*` systemd unit (daily
       backup or quarterly check) is in the `failed` state (10 m). Check
       `journalctl -u restic-backups-ovh.service`.
