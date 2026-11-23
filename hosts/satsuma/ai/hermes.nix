@@ -7,7 +7,7 @@
 let
   homelab = import ../../../homelab.nix;
   careerOpsScan = pkgs.writeShellScript "career-ops-scan.sh" ''
-    cd /ssd-data/career-ops && exec node scan.mjs --quiet
+    cd /ssd/data/career-ops && exec node scan.mjs --quiet
   '';
 in
 {
@@ -119,7 +119,7 @@ in
     '';
   };
 
-  # career-ops lives on the ZFS dataset behind /ssd-data (also NFS-mounted on
+  # career-ops lives on the ZFS dataset behind /ssd/data (also NFS-mounted on
   # pomelo). A user ACL plus a default ACL gives hermes read-write access to
   # that one directory, including files rhuang creates over NFS later,
   # without adding it to the media group.
@@ -127,15 +127,15 @@ in
     description = "Grant Hermes read-write access to the career-ops checkout";
     wantedBy = [ "multi-user.target" ];
     before = [ "hermes-agent.service" ];
-    unitConfig.RequiresMountsFor = [ "/ssd-data" ];
+    unitConfig.RequiresMountsFor = [ "/ssd/data" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
     };
     script = ''
       set -eu
-      ${pkgs.acl}/bin/setfacl -R -m u:hermes:rwX /ssd-data/career-ops
-      ${pkgs.acl}/bin/setfacl -R -d -m u:hermes:rwX /ssd-data/career-ops
+      ${pkgs.acl}/bin/setfacl -R -m u:hermes:rwX /ssd/data/career-ops
+      ${pkgs.acl}/bin/setfacl -R -d -m u:hermes:rwX /ssd/data/career-ops
     '';
   };
 
@@ -145,7 +145,7 @@ in
   # and data/scan-history.tsv, so the job costs no model tokens. The schedule
   # itself lives in Hermes (`hermes cron list`), not here.
   systemd.tmpfiles.rules = [
-    "L+ /var/lib/hermes/workspace/career-ops - - - - /ssd-data/career-ops"
+    "L+ /var/lib/hermes/workspace/career-ops - - - - /ssd/data/career-ops"
     "d /var/lib/hermes/.hermes/scripts 2770 hermes hermes -"
     "C+ /var/lib/hermes/.hermes/scripts/career-ops-scan.sh 0750 hermes hermes - ${careerOpsScan}"
   ];
@@ -200,7 +200,7 @@ in
     ];
     serviceConfig = {
       EnvironmentFile = [ "-/run/hermes-media/env" ];
-      ReadWritePaths = [ "/ssd-data/career-ops" ];
+      ReadWritePaths = [ "/ssd/data/career-ops" ];
     };
   };
 }

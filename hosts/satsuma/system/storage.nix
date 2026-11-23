@@ -34,19 +34,30 @@
     ''
       /hdd/backup    ${tangerine}
       /hdd/data      ${tangerine}
-      /ssd-data      ${tangerine}
+      /ssd/data      ${tangerine}
       /hdd/mediaSrv  100.86.214.60/32(${opts})
     '';
 
   # Working data on the NVMe mirror (fast). Exported to pomelo with the ZFS
   # `sharenfs` property; see docs/NFS.md. Same pool as /, so it is required at
-  # boot and gets no `nofail`. The mountpoint is /ssd-data, whose escaped
-  # systemd unit is ssd\x2ddata.mount.
-  fileSystems."/ssd-data" = {
+  # boot and gets no `nofail`.
+  fileSystems."/ssd/data" = {
     device = "zpool/data";
     fsType = "zfs";
     options = [ "zfsutil" ];
   };
+
+  # Photo library (recordsize=1M for large RAW/TIFF/video). Snapshotted by
+  # sanoid and replicated to hdd/backup/photos; see backup/zfs-backup.nix.
+  fileSystems."/ssd/photos" = {
+    device = "zpool/photos";
+    fsType = "zfs";
+    options = [ "zfsutil" ];
+  };
+
+  systemd.tmpfiles.rules = [
+    "z /ssd/photos 2770 root media - -"
+  ];
 
   # The exported datasets are separate fstab-generated mount units. `zfs share
   # -a` only exports datasets that are currently mounted, so ordering zfs-share
@@ -57,13 +68,13 @@
       "hdd-data.mount"
       "hdd-mediaSrv.mount"
       "hdd-backup.mount"
-      "ssd\\x2ddata.mount"
+      "ssd-data.mount"
     ];
     wants = [
       "hdd-data.mount"
       "hdd-mediaSrv.mount"
       "hdd-backup.mount"
-      "ssd\\x2ddata.mount"
+      "ssd-data.mount"
     ];
   };
 }
