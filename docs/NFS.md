@@ -64,15 +64,18 @@ all.
 
 ### pomelo (desktop, 10.0.10.40)
 
-`hosts/pomelo/modules/nfs.nix` mounts all five datasets under `~/NAS`:
+`hosts/pomelo/modules/nfs.nix` mounts all five datasets under `~/NAS`, at the
+same path as on satsuma (`/hdd/data` -> `~/NAS/hdd/data`):
 
 ```
-10.0.10.72:/hdd/backup   /home/rhuang/NAS/backup  nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
-10.0.10.72:/hdd/data     /home/rhuang/NAS/data    nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
-10.0.10.72:/hdd/mediaSrv /home/rhuang/NAS/media   nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
-10.0.10.72:/ssd/data     /home/rhuang/NAS/ssd     nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
-10.0.10.72:/ssd/photos   /home/rhuang/NAS/photos  nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
+10.0.10.72:/hdd/backup    /home/rhuang/NAS/hdd/backup    nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
+10.0.10.72:/hdd/data      /home/rhuang/NAS/hdd/data      nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
+10.0.10.72:/hdd/mediaSrv  /home/rhuang/NAS/hdd/mediaSrv  nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
+10.0.10.72:/ssd/data      /home/rhuang/NAS/ssd/data      nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
+10.0.10.72:/ssd/photos    /home/rhuang/NAS/ssd/photos    nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
 ```
+
+The layout changed on 2026-11-23 from `~/NAS/{backup,data,media,ssd}`.
 
 On pomelo, the previous fstab is backed up at `/etc/fstab.bak-20261020-nfs`.
 `x-systemd.automount` mounts on first access and unmounts after 10 minutes idle,
@@ -164,10 +167,12 @@ From pomelo:
 
 ```bash
 showmount -e 10.0.10.72
-findmnt -T ~/NAS/backup
-findmnt -T ~/NAS/data
-findmnt -T ~/NAS/media
-touch ~/NAS/data/.write-test && rm ~/NAS/data/.write-test
+findmnt -T ~/NAS/hdd/backup
+findmnt -T ~/NAS/hdd/data
+findmnt -T ~/NAS/hdd/mediaSrv
+findmnt -T ~/NAS/ssd/data
+findmnt -T ~/NAS/ssd/photos
+touch ~/NAS/hdd/data/.write-test && rm ~/NAS/hdd/data/.write-test
 ```
 
 From lime:

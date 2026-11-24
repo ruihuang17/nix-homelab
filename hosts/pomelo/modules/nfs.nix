@@ -3,6 +3,9 @@
 }:
 # satsuma's NFS exports, mounted from the desktop. Kept out of the generated
 # hardware-configuration.nix so a re-scan does not lose them.
+#
+# Mount points mirror the server paths: satsuma:/hdd/data -> ~/NAS/hdd/data,
+# satsuma:/ssd/photos -> ~/NAS/ssd/photos.
 let
   homelab = import ../../../homelab.nix;
 
@@ -15,37 +18,26 @@ let
     "x-systemd.idle-timeout=10min"
     "x-systemd.mount-timeout=30s"
   ];
+
+  mount = path: {
+    name = "/home/rhuang/NAS${path}";
+    value = {
+      device = "${homelab.ip "satsuma"}:${path}";
+      fsType = "nfs4";
+      options = nfsOptions;
+    };
+  };
 in
 {
-  fileSystems."/home/rhuang/NAS/backup" = {
-    device = "${homelab.ip "satsuma"}:/hdd/backup";
-    fsType = "nfs4";
-    options = nfsOptions;
-  };
-
-  fileSystems."/home/rhuang/NAS/data" = {
-    device = "${homelab.ip "satsuma"}:/hdd/data";
-    fsType = "nfs4";
-    options = nfsOptions;
-  };
-
-  fileSystems."/home/rhuang/NAS/media" = {
-    device = "${homelab.ip "satsuma"}:/hdd/mediaSrv";
-    fsType = "nfs4";
-    options = nfsOptions;
-  };
-
-  # SSD dataset on satsuma holding the career-ops checkout (zpool/data).
-  fileSystems."/home/rhuang/NAS/ssd" = {
-    device = "${homelab.ip "satsuma"}:/ssd/data";
-    fsType = "nfs4";
-    options = nfsOptions;
-  };
-
-  # Photo library on satsuma's SSD (zpool/photos).
-  fileSystems."/home/rhuang/NAS/photos" = {
-    device = "${homelab.ip "satsuma"}:/ssd/photos";
-    fsType = "nfs4";
-    options = nfsOptions;
-  };
+  fileSystems = builtins.listToAttrs (
+    map mount [
+      "/hdd/backup"
+      "/hdd/data"
+      "/hdd/mediaSrv"
+      # NVMe datasets: career-ops checkout (zpool/data) and the photo library
+      # (zpool/photos).
+      "/ssd/data"
+      "/ssd/photos"
+    ]
+  );
 }

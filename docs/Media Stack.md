@@ -181,7 +181,7 @@ hardlink imports instant. Moving the library to another dataset (or pool) turns
 imports into copies.
 
 `hdd/mediaSrv` is exported read-write to the whole LAN ([[NFS]]) and mounted by
-pomelo (`~/NAS/media`) and lime. Hermes gets a read-only POSIX ACL on the tree
+pomelo (`~/NAS/hdd/mediaSrv`) and lime. Hermes gets a read-only POSIX ACL on the tree
 (see [[Hermes]]).
 
 ## Networking
