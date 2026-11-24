@@ -3,7 +3,7 @@
 Documented 2026-10-20.
 
 satsuma runs the kernel NFS server (`services.nfs.server.enable = true` in
-`hosts/satsuma/hardware-configuration.nix`) and exports three ZFS datasets with the
+`hosts/satsuma/hardware-configuration.nix`) and exports five ZFS datasets with the
 ZFS `sharenfs` property. `/etc/exports` is empty; ZFS generates the exports and
 registers them with `exportfs`.
 
@@ -15,23 +15,26 @@ registers them with `exportfs`.
 | `hdd/data` | `/hdd/data` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash,no_all_squash` |
 | `hdd/backup` | `/hdd/backup` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash` |
 | `zpool/data` | `/ssd/data` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash` |
+| `zpool/photos` | `/ssd/photos` | `pomelo` `10.0.10.40/32` | `rw=10.0.10.40/32,no_root_squash` |
 
 tangerine is not in `sharenfs`. It needs different options from pomelo, and
 `sharenfs` applies one option set to every host, so its entries are in
 `/etc/exports` (`services.nfs.server.exports` in `hosts/satsuma/system/storage.nix`).
 `exportfs` serves both files. See the tangerine section below.
 
-`zpool/data` is the only export on the NVMe mirror rather than the HDD pool.
-It holds working data that benefits from SSD latency — currently the
+`zpool/data` and `zpool/photos` are on the NVMe mirror rather than the HDD
+pool. `zpool/photos` is the photo library (see `backup/zfs-backup.nix` for its
+snapshots and replication to `hdd/backup/photos`). `zpool/data` holds working data that benefits from SSD latency — currently the
 `career-ops` checkout at `/ssd/data/career-ops`, moved there from
 `/root/career-ops` on 2026-11-06 (the dataset was remounted from `/ssd-data`
 to `/ssd/data` on 2026-11-23). It mounts at boot (declared in
 `hosts/satsuma/system/storage.nix`, no `nofail`, since it shares `zpool` with `/`),
-and `zfs-share.service` is ordered after its `ssd-data.mount` unit.
+and `zfs-share.service` is ordered after its `ssd-data.mount` unit (and
+`ssd-photos.mount` for the photo library).
 
-`hdd/backup/var` inherits its parent's `sharenfs`, but it is `canmount=off` and
-is not separately exported. It is syncoid's replication target, not a client
-mount.
+`hdd/backup/var` and `hdd/backup/photos` inherit their parent's `sharenfs`,
+but they are `canmount=off` and are not separately exported. They are syncoid's
+replication targets, not client mounts.
 
 `hdd/data` and `hdd/backup` were previously exported to `10.0.40.20/32`, which
 is not on the LAN and was unreachable. They were changed to pomelo's address on
@@ -44,7 +47,7 @@ is not on the LAN and was unreachable. They were changed to pomelo's address on
 sudo zfs set sharenfs='rw=10.0.10.0/24,no_root_squash' hdd/data
 
 # Inspect
-zfs get sharenfs hdd/data hdd/backup hdd/mediaSrv
+zfs get sharenfs hdd/data hdd/backup hdd/mediaSrv zpool/data zpool/photos
 exportfs -v
 showmount -e localhost
 ```
@@ -61,13 +64,14 @@ all.
 
 ### pomelo (desktop, 10.0.10.40)
 
-`/etc/fstab` mounts all four datasets under `~/NAS`:
+`hosts/pomelo/modules/nfs.nix` mounts all five datasets under `~/NAS`:
 
 ```
 10.0.10.72:/hdd/backup   /home/rhuang/NAS/backup  nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
 10.0.10.72:/hdd/data     /home/rhuang/NAS/data    nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
 10.0.10.72:/hdd/mediaSrv /home/rhuang/NAS/media   nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
 10.0.10.72:/ssd/data     /home/rhuang/NAS/ssd     nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
+10.0.10.72:/ssd/photos   /home/rhuang/NAS/photos  nfs4  rw,noatime,hard,_netdev,nofail,x-systemd.automount,x-systemd.idle-timeout=10min,x-systemd.mount-timeout=30s  0 0
 ```
 
 On pomelo, the previous fstab is backed up at `/etc/fstab.bak-20261020-nfs`.
@@ -114,6 +118,7 @@ Mounted on demand from Finder, not automatically. Go → Connect to Server:
 | backup | `nfs://100.72.25.50/hdd/backup` |
 | media | `nfs://100.72.25.50/hdd/mediaSrv` |
 | ssd | `nfs://100.72.25.50/ssd/data` |
+| photos | `nfs://100.72.25.50/ssd/photos` |
 
 `100.72.25.50` is satsuma's Tailscale address and works at home and away. On
 the LAN `10.0.10.72` works too.

@@ -41,4 +41,11 @@ in
     fsType = "nfs4";
     options = nfsOptions;
   };
+
+  # Photo library on satsuma's SSD (zpool/photos).
+  fileSystems."/home/rhuang/NAS/photos" = {
+    device = "${homelab.ip "satsuma"}:/ssd/photos";
+    fsType = "nfs4";
+    options = nfsOptions;
+  };
 }

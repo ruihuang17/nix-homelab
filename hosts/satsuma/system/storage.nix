@@ -35,6 +35,7 @@
       /hdd/backup    ${tangerine}
       /hdd/data      ${tangerine}
       /ssd/data      ${tangerine}
+      /ssd/photos    ${tangerine}
       /hdd/mediaSrv  100.86.214.60/32(${opts})
     '';
 
@@ -49,6 +50,7 @@
 
   # Photo library (recordsize=1M for large RAW/TIFF/video). Snapshotted by
   # sanoid and replicated to hdd/backup/photos; see backup/zfs-backup.nix.
+  # Exported to pomelo with `sharenfs` like /ssd/data; see docs/NFS.md.
   fileSystems."/ssd/photos" = {
     device = "zpool/photos";
     fsType = "zfs";
@@ -69,12 +71,14 @@
       "hdd-mediaSrv.mount"
       "hdd-backup.mount"
       "ssd-data.mount"
+      "ssd-photos.mount"
     ];
     wants = [
       "hdd-data.mount"
       "hdd-mediaSrv.mount"
       "hdd-backup.mount"
       "ssd-data.mount"
+      "ssd-photos.mount"
     ];
   };
 }
