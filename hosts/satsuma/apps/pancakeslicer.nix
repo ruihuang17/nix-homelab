@@ -19,7 +19,7 @@
 # sync with what the package actually does.
 # https://github.com/ZimengXiong/PancakeSlicer/releases
 
-{ pkgs, ... }:
+{ lib, pkgs, config, ... }:
 let
   version = "0.4.8";
   # Engine source the release was built from (web/REVISION.txt in the tarball);
@@ -97,6 +97,28 @@ in
       #   ORCA_WEB_BEARER_TOKEN = "...";
       # to the environment above. Anyone who can reach the nginx vhost can
       # mutate state, so the token is worth considering.
+    };
+  };
+
+  # The daily Nix store optimiser (nix.optimise.automatic) deduplicates files
+  # by replacing them with hardlinks to an identical copy elsewhere in the
+  # store, which changes their inode numbers — e.g. once a rebuild of this
+  # package has left the previous build behind in an older system generation.
+  # The server re-stats its engine on every health check and treats a changed
+  # inode as "engine executable changed; restart to reprobe": it latches into
+  # degraded (shown as "Engine still starting" under Slicing method) until the
+  # process restarts. So restart it once the optimiser has finished.
+  # nix-optimise.service is Type=simple, so ExecStartPost= would run when the
+  # optimiser starts rather than when it finishes; OnSuccess= fires once it has
+  # completed successfully.
+  systemd.services.nix-optimise = lib.mkIf config.nix.optimise.automatic {
+    unitConfig.OnSuccess = [ "pancakeslicer-reprobe.service" ];
+  };
+  systemd.services.pancakeslicer-reprobe = {
+    description = "Restart PancakeSlicer after the Nix store optimiser";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${config.systemd.package}/bin/systemctl --no-block try-restart pancakeslicer.service";
     };
   };
 }

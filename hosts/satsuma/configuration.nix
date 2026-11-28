@@ -73,6 +73,7 @@
     nh
     rbw
     pinentry-curses # headless host; rbw is configured with `pinentry = "pinentry-curses"`
+    claude-code
   ];
 
   system.stateVersion = "26.05"; # Did you read the comment?
